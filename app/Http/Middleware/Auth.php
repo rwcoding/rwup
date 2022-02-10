@@ -21,6 +21,13 @@ class Auth
         $token = $request->header("Ms-Token");
         $sign = $request->header("Ms-Sign");
 
+//        $t = TokenModel::with(['user' => function ($query) {
+//            $query->select(['id', 'name', 'username']);
+//        }])
+////            ->select("id, platform, token, expire, created_at")
+//            ->find(44);
+//        print_r($t->toArray());
+
         // header 参数必需
         if (!$time || !$token || !$sign) {
             return ApiService::failure("缺少api参数");

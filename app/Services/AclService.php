@@ -7,16 +7,19 @@ use App\Models\RolePermissionModel;
 
 class AclService
 {
-    public static function verify(string $roles, string $permission): bool
+    public static function getPermissionByRoles(string $roles)
     {
         $key = "acl-".str_replace($roles,',','-');
-        $cache = CacheModel::where("sign", $key)->first();
-        if (!$cache) {
-            return in_array($permission, self::createCache($key));
-        } else {
-            $ps = $cache->data;
-            return str_contains(','.$ps.',', ','.$permission.',');
+        $cache = CacheService::get($key);
+        if ($cache === false) {
+            return self::createCache($roles);
         }
+        return $cache;
+    }
+
+    public static function verify(string $roles, string $permission): bool
+    {
+        return in_array($permission, self::getPermissionByRoles($roles));
     }
 
     public static function createCache(string $roles): array
@@ -28,13 +31,10 @@ class AclService
             $data = array_merge($data, $rps);
         }
         $data = array_unique($data);
-        $cache = CacheModel::whereSign($roles)->first();
-        if (!$cache) {
-            $cache = new CacheModel();
-            $cache->sign = $roles;
-        }
-        $cache->data = $data ? implode(",", $data) : '';
-        $cache->save();
+
+        $key = "acl-".str_replace($roles,',','-');
+        CacheService::set($key, $data);
+
         return $data;
     }
 }

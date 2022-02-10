@@ -21,9 +21,34 @@ class UserService
         return $user;
     }
 
-    public static function createSalt(): string
+    public static function verifyPassword(string|UserModel $username, string $password, string &$msg = ''): ?UserModel
     {
-        return Str::random(40);
+        if (is_string($username)) {
+            $user = UserModel::whereUsername($username)->first();
+            if (!$user) {
+                $msg = "用户不存在";
+                return null;
+            }
+            if ($user->status != UserModel::STATUS_OK) {
+                $msg = "用户无效";
+                return null;
+            }
+        } else {
+            $user = $username;
+        }
+
+        if (self::createPassword($password, $user->salt) !== $user->password) {
+            $msg = "账号或密码错误";
+            return null;
+        }
+        return $user;
+    }
+
+    public static function newPassword(UserModel $user, string $password): bool
+    {
+        $user->salt = self::createSalt();
+        $user->password = self::createPassword($password, $user->salt);
+        return $user->save();
     }
 
     public static function createPassword(string $password, string $salt = ""): string
@@ -31,24 +56,19 @@ class UserService
         if (!$salt) {
             $salt = self::createSalt();
         }
-        return md5(md5($password).$salt);
+        return md5(md5($password) . $salt);
     }
 
-    public static function verifyPassword(string $username, string $password, string &$msg = ''): ?UserModel
+    public static function createSalt(): string
     {
-        $user = UserModel::whereUsername($username)->first();
-        if (!$user) {
-            $msg = "用户不存在";
-            return null;
-        }
-        if ($user->status != UserModel::STATUS_OK) {
-            $msg = "用户无效";
-            return null;
-        }
-        if (self::createPassword($password, $user->salt) !== $user->password) {
-            $msg = "账号或密码错误";
-            return null;
-        }
-        return $user;
+        return Str::random(40);
+    }
+
+    public static function statusNames(): array
+    {
+        return [
+            ['k' => UserModel::STATUS_OK, 'v' => '正常'],
+            ['k' => UserModel::STATUS_LOCK, 'v' => '锁定'],
+        ];
     }
 }

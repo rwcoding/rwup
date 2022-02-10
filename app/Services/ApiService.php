@@ -4,7 +4,7 @@ namespace App\Services;
 
 class ApiService
 {
-    public static function success(array $data, string $msg = '', int $code = 10000): string
+    public static function success(array $data = [], string $msg = '', int $code = 10000): string
     {
         return json_encode([
             'code' => $code,
