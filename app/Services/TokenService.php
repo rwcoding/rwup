@@ -39,4 +39,9 @@ class TokenService
         }
         return null;
     }
+
+    public static function delete(string $token): bool
+    {
+        return TokenModel::where("token", $token)->delete();
+    }
 }

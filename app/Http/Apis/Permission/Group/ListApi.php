@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Role;
+namespace App\Http\Apis\Permission\Group;
 
 use App\Http\Apis\BaseApi;
-use App\Models\RoleModel;
+use App\Models\PermissionGroupModel;
 
 /**
  * @property int page
@@ -21,17 +21,17 @@ class ListApi extends BaseApi
 
     public function index(): string|array
     {
-        $data = RoleModel::select(["id", "name"])
+        $data = PermissionGroupModel::select(['id', 'name', 'ord'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderBy("id")->get()->toArray();
 
-        $count = RoleModel::count();
+        $count = PermissionGroupModel::count();
 
         return [
-            'datas' => $data,
-            'count' => $count,
-            'page' => $this->page,
+            'datas'     => $data,
+            'count'     => $count,
+            'page'      => $this->page,
             'page_size' => $this->page_size
         ];
     }

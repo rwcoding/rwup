@@ -4,6 +4,7 @@ namespace App\Http\Apis;
 
 use App\Http\Context;
 use App\Services\ApiService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,6 +20,11 @@ abstract class BaseApi
     public function __get(string $name)
     {
         return $this->attributes[$name] ?? null;
+    }
+
+    public function getToken(): string
+    {
+        return Context::request()->header('Ms-Token');
     }
 
     public function callAction($method, $parameters): string|Response

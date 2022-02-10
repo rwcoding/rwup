@@ -64,6 +64,7 @@ class Auth
             return ApiService::failure("数据格式错误");
         }
 
+        Context::setRequest($request);
         Context::setData($data);
         Context::setUser($user);
 

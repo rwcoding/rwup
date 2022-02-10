@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Role;
+namespace App\Http\Apis\Log;
 
 use App\Http\Apis\BaseApi;
-use App\Models\RoleModel;
+use App\Models\LogModel;
 use App\Services\ApiService;
 
 /**
@@ -20,9 +20,11 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = RoleModel::select(["id","name"])->where("id", $this->id)->first();
+        $model = LogModel::select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'created_at'])
+            ->whereId($this->id)
+            ->first();
         if (!$model) {
-            return ApiService::failure("无效的角色");
+            return ApiService::failure("无效的数据");
         }
         return $model->toArray();
     }

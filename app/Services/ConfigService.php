@@ -53,4 +53,16 @@ class ConfigService
         }
         return null;
     }
+
+    public static function delete(ConfigModel $config): bool
+    {
+        $key = $config->k;
+        if ($config->delete()) {
+            if (isset(self::$data[$key])) {
+                unset(self::$data[$key]);
+            }
+            return true;
+        }
+        return false;
+    }
 }

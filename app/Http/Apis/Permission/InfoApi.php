@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Role;
+namespace App\Http\Apis\Permission;
 
 use App\Http\Apis\BaseApi;
-use App\Models\RoleModel;
+use App\Models\PermissionModel;
 use App\Services\ApiService;
 
 /**
@@ -20,9 +20,11 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = RoleModel::select(["id","name"])->where("id", $this->id)->first();
+        $model = PermissionModel::query()
+            ->select(['id', 'name', 'permission', 'group_id', 'type', 'created_at'])
+            ->find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的角色");
+            return ApiService::failure("无效的数据");
         }
         return $model->toArray();
     }

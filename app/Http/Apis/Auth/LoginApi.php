@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Apis;
+namespace App\Http\Apis\Auth;
 
+use App\Http\Apis\BaseApi;
 use App\Services\TokenService;
 use App\Services\UserService;
 
