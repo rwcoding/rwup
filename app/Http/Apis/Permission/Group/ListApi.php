@@ -14,7 +14,7 @@ class ListApi extends BaseApi
     public function rules(): array
     {
         return [
-            "page"      => "required|numeric|min:1",
+            "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
         ];
     }
@@ -29,9 +29,9 @@ class ListApi extends BaseApi
         $count = PermissionGroupModel::count();
 
         return [
-            'datas'     => $data,
-            'count'     => $count,
-            'page'      => $this->page,
+            'datas' => $data,
+            'count' => $count,
+            'page' => $this->page,
             'page_size' => $this->page_size
         ];
     }

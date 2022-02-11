@@ -15,7 +15,7 @@ class EditApi extends BaseApi
     public function rules(): array
     {
         return [
-            "id"   => "required|numeric|min:1",
+            "id" => "required|numeric|min:1",
             "name" => "required|min:2",
         ];
     }

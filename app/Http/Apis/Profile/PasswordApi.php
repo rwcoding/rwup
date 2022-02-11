@@ -31,7 +31,7 @@ class PasswordApi extends BaseApi
         }
 
         if (!UserService::newPassword($user, $this->new_password)) {
-            return ApiService::failure('修改失败');;
+            return ApiService::failure('修改失败');
         }
 
         return ApiService::success();

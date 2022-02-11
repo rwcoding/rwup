@@ -18,50 +18,50 @@ class ListApi extends BaseApi
     public function rules(): array
     {
         return [
-            "page"      => "required|numeric|min:1",
+            "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "type"      => "required|numeric|min:1",
-            "username"  => "required|string|min:5|max:30",
-            "target"    => "required|numeric|min:1",
+            "type" => "required|numeric|min:1",
+            "username" => "required|string|min:5|max:30",
+            "target" => "required|numeric|min:1",
         ];
     }
 
     public function index(): string|array
     {
-        $where = [];
+        $query = UserModel::query();
         if ($this->username) {
             $user = UserModel::whereUsername($this->username)->first();
             if (!$user) {
                 return [
                     'datas' => [],
                     'count' => 0,
-                    'page'      => $this->page,
+                    'page' => $this->page,
                     'page_size' => $this->page_size
                 ];
             }
-            $where[] = ['user_id', '=', $user->id];
+            $query->where('user_id', $user->id);
         }
 
         if ($this->type) {
-            $where[] = ['type', '=', $this->type];
+            $query->where('type', $this->type);
         }
 
         if ($this->target) {
-            $where[] = ['target', '=', $this->target];
+            $query->where('target', $this->target);
         }
 
-        $data = LogModel::where($where)
+        $count = (clone $query)->count();
+
+        $data = $query
             ->select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderBy("id")->get()->toArray();
 
-        $count = LogModel::where($where)->count();
-
         return [
-            'datas'     => $data,
-            'count'     => $count,
-            'page'      => $this->page,
+            'datas' => $data,
+            'count' => $count,
+            'page' => $this->page,
             'page_size' => $this->page_size
         ];
     }

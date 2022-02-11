@@ -4,7 +4,6 @@ namespace App\Http\Apis;
 
 use App\Http\Context;
 use App\Services\ApiService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 

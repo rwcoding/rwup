@@ -15,31 +15,31 @@ class ListApi extends BaseApi
     public function rules(): array
     {
         return [
-            "page"      => "required|numeric|min:1",
+            "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "key"       => "string|min:1|max:100",
+            "key" => "string|min:1|max:100",
         ];
     }
 
     public function index(): string|array
     {
-        $where = [];
+        $query = ConfigModel::query();
         if ($this->key) {
-            $where[] = ['k', '=', $this->key];
+            $query->where("k", $this->key);
         }
 
-        $data = ConfigModel::where($where)
+        $count = (clone $query)->count();
+
+        $data = $query
             ->select(['id', 'name', 'k', 'v', 'data_type', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderBy("id")->get()->toArray();
 
-        $count = ConfigModel::where($where)->count();
-
         return [
-            'datas'     => $data,
-            'count'     => $count,
-            'page'      => $this->page,
+            'datas' => $data,
+            'count' => $count,
+            'page' => $this->page,
             'page_size' => $this->page_size
         ];
     }

@@ -3,30 +3,22 @@
 namespace App\Http\Middleware;
 
 use App\Http\Context;
-use App\Models\TokenModel;
-use App\Models\UserModel;
 use App\Services\AclService;
 use App\Services\ApiService;
 use App\Services\TokenService;
 use App\Services\UserService;
+use Closure;
 use Illuminate\Http\Request;
 
 class Auth
 {
-    public function handle(Request $request, \Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $api = $request->getPathInfo();
         $current = time();
         $time = $request->header("Ms-Time");
         $token = $request->header("Ms-Token");
         $sign = $request->header("Ms-Sign");
-
-//        $t = TokenModel::with(['user' => function ($query) {
-//            $query->select(['id', 'name', 'username']);
-//        }])
-////            ->select("id, platform, token, expire, created_at")
-//            ->find(44);
-//        print_r($t->toArray());
 
         // header 参数必需
         if (!$time || !$token || !$sign) {

@@ -20,13 +20,13 @@ class AddApi extends BaseApi
     public function rules(): array
     {
         $rules = [
-            "name"       => "required|min:2|max:100",
+            "name" => "required|min:2|max:100",
             "permission" => "required|min:2|max:100",
-            "group_id"   => "required|numeric|min:1",
-            "type"       => "required|numeric|min:1",
+            "group_id" => "required|numeric|min:1",
+            "type" => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {
-            $rules['id'] =  "required|numeric|min:1";
+            $rules['id'] = "required|numeric|min:1";
         }
         return $rules;
     }

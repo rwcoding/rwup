@@ -20,7 +20,7 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = RoleModel::select(["id","name"])->where("id", $this->id)->first();
+        $model = RoleModel::select(["id", "name"])->where("id", $this->id)->first();
         if (!$model) {
             return ApiService::failure("无效的角色");
         }

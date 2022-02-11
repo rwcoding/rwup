@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\CacheModel;
+use App\Models\PermissionModel;
 use App\Models\RolePermissionModel;
+use App\Models\UserModel;
 
 class AclService
 {
@@ -36,5 +38,14 @@ class AclService
         CacheService::set($key, $data);
 
         return $data;
+    }
+
+    public static function updateCacheByRole(int $roleId)
+    {
+        $us = UserModel::whereRaw("FIND_IN_SET(?, roles)", $roleId)
+            ->groupBy("roles")->get();
+        foreach ($us as $item) {
+            self::createCache($item->roles);
+        }
     }
 }

@@ -36,7 +36,7 @@ class LoginApi extends BaseApi
 
         return [
             'token' => $arr['token'],
-            'key'   => $arr['key'],
+            'key' => $arr['key'],
         ];
     }
 }

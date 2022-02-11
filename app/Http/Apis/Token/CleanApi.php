@@ -23,7 +23,7 @@ class CleanApi extends BaseApi
         if ($this->type == 1) {
             TokenModel::query()->where("1=1")->delete();
         } else {
-            TokenModel::query()->where("created_at < ".(time() - 30*24*60*60))->delete();
+            TokenModel::query()->where("created_at < " . (time() - 30 * 24 * 60 * 60))->delete();
         }
 
         return ApiService::success();

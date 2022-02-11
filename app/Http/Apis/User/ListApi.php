@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Apis\Cache;
+namespace App\Http\Apis\User;
 
 use App\Http\Apis\BaseApi;
-use App\Models\CacheModel;
+use App\Models\TokenModel;
+use App\Models\UserModel;
 
 /**
  * @property int page
  * @property int page_size
- * @property string key
+ * @property string username
+ * @property int role_id
  */
 class ListApi extends BaseApi
 {
@@ -17,22 +19,27 @@ class ListApi extends BaseApi
         return [
             "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "key" => "string|min:1|max:100",
+            "username" => "string|min:5|max:20",
         ];
     }
 
     public function index(): string|array
     {
-        $query = CacheModel::query();
-        if ($this->key) {
-            $query->where('k', $this->key);
+        $query = UserModel::query();
+        if ($this->username) {
+            $query->where('username', 'like', trim($this->username));
+        }
+        if ($this->role_id) {
+            $query->whereRaw("FIND_IN_SET(?,roles)", $this->role_id);
         }
         $count = (clone $query)->count();
         $data = $query
-            ->select(['id', 'name', 'k', 'expire', 'created_at'])
+            ->select(['id', 'username', 'name', 'phone', 'roles', 'status', 'is_super', 'ip', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
-            ->orderBy("id")->get()->toArray();
+            ->orderByDesc("id")
+            ->get();
+
         return [
             'datas' => $data,
             'count' => $count,

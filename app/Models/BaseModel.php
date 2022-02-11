@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin \Illuminate\Database\Query\Builder
@@ -17,8 +18,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|static whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|static whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|static whereUpdatedAt($value)
+ * @method static \Illuminate\Support\Collection|array<static> get()
  */
 class BaseModel extends Model
 {
-
+    public static function table(): \Illuminate\Database\Query\Builder
+    {
+        return DB::table((new static())->getTable());
+    }
 }
