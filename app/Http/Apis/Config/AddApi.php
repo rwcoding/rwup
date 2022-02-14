@@ -36,7 +36,7 @@ class AddApi extends BaseApi
     {
         $model = ConfigService::set(trim($this->k), trim($this->v), $this->data_type);
         if ($model) {
-            return ApiService::failure('添加失败');
+            return '添加失败';
         }
         return ['id' => $model->id];
     }

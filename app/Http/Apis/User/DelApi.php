@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Role;
+namespace App\Http\Apis\User;
 
 use App\Http\Apis\BaseApi;
-use App\Models\RoleModel;
+use App\Models\UserModel;
 use App\Services\ApiService;
 
 /**
@@ -20,9 +20,15 @@ class DelApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = RoleModel::find($this->id);
+        $model = UserModel::find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的角色");
+            return '无效的数据';
+        }
+        if ($model->id == 1) {
+            return '该用户无法删除';
+        }
+        if ($model->is_super && $this->getUser()->id != 1) {
+            return '该用户无法删除';
         }
         if (!$model->delete()) {
             return '删除失败';

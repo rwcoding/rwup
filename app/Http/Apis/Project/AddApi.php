@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Apis\Permission\Group;
+namespace App\Http\Apis\Project;
 
 use App\Http\Apis\BaseApi;
-use App\Models\PermissionGroupModel;
-use App\Services\ApiService;
+use App\Models\ProjectModel;
+use App\Services\UserService;
 
 /**
  * @property string name
+ * @property array<int> user_manage
+ * @property array<int> user_read
+ * @property array<int> user_write
  * @property int ord
  * @property int id
  */
@@ -19,7 +22,10 @@ class AddApi extends BaseApi
     {
         $rules = [
             "name" => "required|min:2|max:100",
-            "ord" => "required|numeric|min:0",
+            "user_manage" => "array",
+            "user_read" => "array",
+            "user_write" => "array",
+            "ord" => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {
             $rules['id'] = "required|numeric|min:1";
@@ -30,15 +36,20 @@ class AddApi extends BaseApi
     public function index(): string|array
     {
         if (!$this->isAdd) {
-            $model = PermissionGroupModel::find($this->id);
+            $model = ProjectModel::find($this->id);
             if (!$model) {
                 return '无效的数据';
             }
         } else {
-            $model = new PermissionGroupModel();
+            $model = new ProjectModel();
         }
-        $model->name = trim($this->name);
+
+        $model->name = $this->name;
+        $model->user_manage = $this->user_manage ? implode(',', $this->user_manage) : '';
+        $model->user_read = $this->user_read ? implode(',', $this->user_read) : '';
+        $model->user_write = $this->user_manage ? implode(',', $this->user_write) : '';
         $model->ord = $this->ord;
+
         if (!$model->save()) {
             return '保存失败';
         }

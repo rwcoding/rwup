@@ -27,6 +27,7 @@ class ListApi extends BaseApi
         if ($this->key) {
             $query->where('k', $this->key);
         }
+
         $count = (clone $query)->count();
         $data = $query
             ->select(['id', 'name', 'k', 'expire', 'created_at'])

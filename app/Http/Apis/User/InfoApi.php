@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Config;
+namespace App\Http\Apis\User;
 
 use App\Http\Apis\BaseApi;
-use App\Models\ConfigModel;
+use App\Models\UserModel;
 use App\Services\ApiService;
 
 /**
@@ -20,11 +20,11 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = ConfigModel::select(['id', 'name', 'k', 'v', 'data_type', 'created_at'])
-            ->whereId($this->id)
-            ->first();
+        $model = UserModel::query()
+            ->select(['id', 'username', 'name', 'phone', 'roles', 'status', 'is_super', 'ip', 'created_at'])
+            ->find($this->id);
         if (!$model) {
-            return '无效的配置';
+            return '无效的数据';
         }
         return $model->toArray();
     }

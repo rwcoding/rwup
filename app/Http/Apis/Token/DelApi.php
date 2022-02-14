@@ -22,10 +22,10 @@ class DelApi extends BaseApi
     {
         $model = TokenModel::find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的数据");
+            return '无效的数据';
         }
         if (!$model->delete()) {
-            return ApiService::failure("删除失败");
+            return '删除失败';
         }
         return ApiService::success();
     }

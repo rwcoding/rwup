@@ -23,11 +23,11 @@ class DelApi extends BaseApi
     {
         $model = PermissionGroupModel::find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的数据");
+            return '无效的数据';
         }
         if (!$model->delete()) {
             PermissionModel::where("group_id", $this->id)->update(['group_id' => 0]);
-            return ApiService::failure("删除失败");
+            return '删除失败';
         }
         return ApiService::success();
     }

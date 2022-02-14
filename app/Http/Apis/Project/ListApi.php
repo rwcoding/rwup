@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Apis\User;
+namespace App\Http\Apis\Project;
 
 use App\Http\Apis\BaseApi;
-use App\Models\UserModel;
+use App\Models\ProjectModel;
 
 /**
  * @property int page
  * @property int page_size
- * @property string username
- * @property int role_id
  */
 class ListApi extends BaseApi
 {
@@ -18,25 +16,23 @@ class ListApi extends BaseApi
         return [
             "page"      => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "username"  => "string|min:5|max:20",
         ];
     }
 
     public function index(): string|array
     {
-        $query = UserModel::query();
-        if ($this->username) {
-            $query->where('username', 'like', trim($this->username));
-        }
-        if ($this->role_id) {
-            $query->whereRaw("FIND_IN_SET(?,roles)", $this->role_id);
-        }
+        $query = ProjectModel::query();
         $count = (clone $query)->count();
         $data = $query
-            ->select(['id', 'username', 'name', 'phone', 'roles', 'status', 'is_super', 'ip', 'created_at'])
+            ->with(['doc'=>function($query) {
+                $query->select(['id', 'name', 'updated_at']);
+            }, 'updater'=>function($query) {
+                $query->select(['id', 'name']);
+            }])
+            ->select(['id', 'name', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
-            ->orderByDesc("id")
+            ->orderBy("ord")
             ->get();
 
         return [

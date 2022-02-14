@@ -26,7 +26,7 @@ class EditApi extends BaseApi
         $user->name = $this->name;
         $user->phone = $this->phone;
         if (!$user->save()) {
-            return ApiService::failure("修改失败");
+            return '修改失败';
         }
         return ApiService::success();
     }

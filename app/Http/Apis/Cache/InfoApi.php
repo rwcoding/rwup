@@ -23,7 +23,7 @@ class InfoApi extends BaseApi
         $model = CacheModel::select(["id", "name", "k", "v", "expire", "created_at"])
             ->find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的数据");
+            return '无效的数据';
         }
         return $model->toArray();
     }

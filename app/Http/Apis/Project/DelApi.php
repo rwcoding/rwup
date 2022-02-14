@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Apis\Role;
+namespace App\Http\Apis\Project;
 
 use App\Http\Apis\BaseApi;
-use App\Models\RoleModel;
+use App\Models\DocModel;
+use App\Models\ProjectModel;
 use App\Services\ApiService;
 
 /**
@@ -20,10 +21,15 @@ class DelApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = RoleModel::find($this->id);
+        $model = ProjectModel::find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的角色");
+            return '无效的数据';
         }
+
+        if (DocModel::where("project_id", $model->id)->count() > 0) {
+            return '该工程下还有文档，无法删除！';
+        }
+
         if (!$model->delete()) {
             return '删除失败';
         }

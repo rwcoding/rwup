@@ -24,7 +24,7 @@ class InfoApi extends BaseApi
             ->whereId($this->id)
             ->first();
         if (!$model) {
-            return ApiService::failure("无效的数据");
+            return '无效的数据';
         }
         return $model->toArray();
     }

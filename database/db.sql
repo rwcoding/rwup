@@ -42,6 +42,43 @@ CREATE TABLE IF NOT EXISTS `rwup_config` (
 
 -- 数据导出被取消选择。
 
+-- 导出  表 rwup.rwup_directory 结构
+CREATE TABLE IF NOT EXISTS `rwup_directory` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `project_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `ord` int(10) unsigned NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 数据导出被取消选择。
+
+-- 导出  表 rwup.rwup_doc 结构
+CREATE TABLE IF NOT EXISTS `rwup_doc` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `pid` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `sname` varchar(50) NOT NULL DEFAULT '',
+  `content` text DEFAULT NULL,
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `user_read` text DEFAULT NULL,
+  `user_write` text DEFAULT NULL,
+  `sharecode` varchar(100) NOT NULL DEFAULT '',
+  `is_share` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `ord` int(10) unsigned NOT NULL DEFAULT 1,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+-- 数据导出被取消选择。
+
 -- 导出  表 rwup.rwup_log 结构
 CREATE TABLE IF NOT EXISTS `rwup_log` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -87,6 +124,25 @@ CREATE TABLE IF NOT EXISTS `rwup_permission_group` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+
+-- 数据导出被取消选择。
+
+-- 导出  表 rwup.rwup_project 结构
+CREATE TABLE IF NOT EXISTS `rwup_project` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '创建人',
+  `user_manage` varchar(3000) NOT NULL DEFAULT '' COMMENT '管理用户ID',
+  `user_read` varchar(3000) DEFAULT '' COMMENT '可读用户ID',
+  `user_write` varchar(3000) DEFAULT '' COMMENT '可写用户ID',
+  `doc_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `doc_updater` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `ord` int(10) unsigned NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 

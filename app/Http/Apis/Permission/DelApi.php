@@ -22,10 +22,10 @@ class DelApi extends BaseApi
     {
         $model = PermissionModel::find($this->id);
         if (!$model) {
-            return ApiService::failure("无效的权限");
+            return '无效的权限';
         }
         if (!$model->delete()) {
-            return ApiService::failure("删除失败");
+            return '删除失败';
         }
         return ApiService::success();
     }

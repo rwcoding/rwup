@@ -36,7 +36,7 @@ class AddApi extends BaseApi
         if (!$this->isAdd) {
             $model = PermissionModel::find($this->id);
             if (!$model) {
-                return ApiService::failure("无效的数据");
+                return '无效的数据';
             }
         } else {
             $model = new PermissionModel();
@@ -46,7 +46,7 @@ class AddApi extends BaseApi
         $model->group_id = $this->group_id;
         $model->type = $this->type;
         if (!$model->save()) {
-            return ApiService::failure('保存失败');
+            return '保存失败';
         }
         return ['id' => $model->id];
     }

@@ -22,9 +22,9 @@ class CleanApi extends BaseApi
     public function index(): string|array
     {
         if ($this->type == 1) {
-            CacheModel::query()->where("1=1")->delete();
+            CacheModel::query()->whereRaw("1=1")->delete();
         } else {
-            CacheModel::query()->where("expire < ?", DateService::now())->delete();
+            CacheModel::query()->whereRaw("expire < ?", DateService::now())->delete();
         }
 
         return ApiService::success();

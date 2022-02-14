@@ -27,11 +27,11 @@ class PasswordApi extends BaseApi
 
         // 验证密码
         if (!UserService::verifyPassword($user, $this->old_password)) {
-            return ApiService::failure('密码验证错误');
+            return '密码验证错误';
         }
 
         if (!UserService::newPassword($user, $this->new_password)) {
-            return ApiService::failure('修改失败');
+            return '修改失败';
         }
 
         return ApiService::success();
