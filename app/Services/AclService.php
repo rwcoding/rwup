@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\CacheModel;
+use App\Models\DocModel;
 use App\Models\PermissionModel;
+use App\Models\ProjectModel;
 use App\Models\RolePermissionModel;
 use App\Models\UserModel;
 
@@ -47,5 +49,25 @@ class AclService
         foreach ($us as $item) {
             self::createCache($item->roles);
         }
+    }
+
+    public static function allowReadProject(ProjectModel $project, int $userId): bool
+    {
+        return in_array($userId, explode(',',$project->allow_read));
+    }
+
+    public static function allowWriteProject(ProjectModel $project, int $userId): bool
+    {
+        return in_array($userId, explode(',',$project->allow_write));
+    }
+
+    public static function allowReadDoc(DocModel $doc, int $userId): bool
+    {
+        return !in_array($userId, explode(',',$doc->deny_read));
+    }
+
+    public static function allowWriteDoc(DocModel $doc, int $userId): bool
+    {
+        return !in_array($userId, explode(',',$doc->deny_write));
     }
 }

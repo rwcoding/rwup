@@ -8,9 +8,9 @@ use App\Services\UserService;
 
 /**
  * @property string name
- * @property array<int> user_manage
- * @property array<int> user_read
- * @property array<int> user_write
+ * @property array<int> manager
+ * @property array<int> allow_read
+ * @property array<int> allow_write
  * @property int ord
  * @property int id
  */
@@ -23,8 +23,8 @@ class AddApi extends BaseApi
         $rules = [
             "name" => "required|min:2|max:100",
             "user_manage" => "array",
-            "user_read" => "array",
-            "user_write" => "array",
+            "allow_read" => "array",
+            "allow_write" => "array",
             "ord" => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {
@@ -45,9 +45,9 @@ class AddApi extends BaseApi
         }
 
         $model->name = $this->name;
-        $model->user_manage = $this->user_manage ? implode(',', $this->user_manage) : '';
-        $model->user_read = $this->user_read ? implode(',', $this->user_read) : '';
-        $model->user_write = $this->user_manage ? implode(',', $this->user_write) : '';
+        $model->manager = $this->manager ? implode(',', $this->manager) : '';
+        $model->allow_read = $this->allow_read ? implode(',', $this->allow_read) : '';
+        $model->allow_write = $this->allow_write ? implode(',', $this->allow_write) : '';
         $model->ord = $this->ord;
 
         if (!$model->save()) {
