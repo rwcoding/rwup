@@ -29,7 +29,7 @@ class ListApi extends BaseApi
         }
         $count = (clone $query)->count();
         $data = $query
-            ->select(['id', 'name', 'sname', 'is_share', 'share_code', 'created_at'])
+            ->select(['id', 'name', 'pid', 'ord', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderByDesc("ord")

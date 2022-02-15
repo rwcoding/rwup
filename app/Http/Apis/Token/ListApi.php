@@ -45,10 +45,11 @@ class ListApi extends BaseApi
                     $query->select(['id', 'name', 'username']);
                 }
             ])
-            ->select(['id', 'platform', 'token', 'expire', 'created_at'])
+            ->select(['id', 'user_id', 'platform', 'token', 'expire', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
-            ->orderBy("id")->get()->toArray();
+            ->orderByDesc("id")
+            ->get()->toArray();
 
         return [
             'datas' => $data,

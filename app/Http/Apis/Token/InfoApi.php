@@ -23,7 +23,7 @@ class InfoApi extends BaseApi
         $model = TokenModel::with(['user' => function ($query) {
             $query->select(['id', 'name', 'username']);
         }])
-            ->select(["id", "platform", "token", "expire", "created_at"])
+            ->select(["id", "user_id", "platform", "token", "expire", "created_at"])
             ->find($this->id);
         if (!$model) {
             return '无效的数据';

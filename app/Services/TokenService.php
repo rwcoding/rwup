@@ -38,7 +38,7 @@ class TokenService
         $model->platform = $platform;
         $model->token = $token;
         $model->token_key = $tokenKey;
-        $model->expire = time() + 30 * 24 * 60 * 60;
+        $model->expire = DateService::afterSecond(env('TOKEN_TIMEOUT'));
         if ($model->save()) {
             return ['token'=>$token, 'key'=>$tokenKey];
         }

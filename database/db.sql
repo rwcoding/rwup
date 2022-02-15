@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `rwup_cache` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sign` (`k`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `rwup_config` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `k` (`k`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 -- 数据导出被取消选择。
 
@@ -61,16 +61,32 @@ CREATE TABLE IF NOT EXISTS `rwup_directory` (
 CREATE TABLE IF NOT EXISTS `rwup_doc` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` bigint(20) unsigned NOT NULL DEFAULT 0,
-  `pid` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `directory_id` bigint(20) unsigned NOT NULL DEFAULT 0,
   `name` varchar(100) NOT NULL DEFAULT '',
   `sname` varchar(50) NOT NULL DEFAULT '',
   `content` text DEFAULT NULL,
   `user_id` bigint(20) unsigned NOT NULL DEFAULT 0,
-  `user_read` text DEFAULT NULL,
-  `user_write` text DEFAULT NULL,
-  `sharecode` varchar(100) NOT NULL DEFAULT '',
+  `deny_read` text DEFAULT NULL,
+  `deny_write` text DEFAULT NULL,
+  `share_code` varchar(100) NOT NULL DEFAULT '',
   `is_share` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `ord` int(10) unsigned NOT NULL DEFAULT 1,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+-- 数据导出被取消选择。
+
+-- 导出  表 rwup.rwup_doc_log 结构
+CREATE TABLE IF NOT EXISTS `rwup_doc_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `doc_id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `sname` varchar(50) NOT NULL DEFAULT '',
+  `content` text DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -94,13 +110,13 @@ CREATE TABLE IF NOT EXISTS `rwup_log` (
   KEY `type` (`type`),
   KEY `created_at` (`created_at`),
   KEY `adminer_id` (`user_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
 -- 导出  表 rwup.rwup_permission 结构
 CREATE TABLE IF NOT EXISTS `rwup_permission` (
-  `id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '权限名称',
   `permission` varchar(100) NOT NULL DEFAULT '' COMMENT '权限标识',
   `group_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '权限类型',
@@ -109,13 +125,13 @@ CREATE TABLE IF NOT EXISTS `rwup_permission` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`permission`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
 -- 导出  表 rwup.rwup_permission_group 结构
 CREATE TABLE IF NOT EXISTS `rwup_permission_group` (
-  `id` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '父分组',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '分组名称',
   `ord` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '排序',
@@ -123,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `rwup_permission_group` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -132,9 +148,12 @@ CREATE TABLE IF NOT EXISTS `rwup_project` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '创建人',
-  `user_manage` varchar(3000) NOT NULL DEFAULT '' COMMENT '管理用户ID',
-  `user_read` varchar(3000) DEFAULT '' COMMENT '可读用户ID',
-  `user_write` varchar(3000) DEFAULT '' COMMENT '可写用户ID',
+  `manager` varchar(1000) NOT NULL DEFAULT '' COMMENT '管理用户ID',
+  `allow_read` text DEFAULT NULL COMMENT '可读用户ID',
+  `allow_write` text DEFAULT NULL COMMENT '可写用户ID',
+  `doc_num` int(10) unsigned NOT NULL DEFAULT 0,
+  `bug_num` int(10) unsigned NOT NULL DEFAULT 0,
+  `test_num` int(10) unsigned NOT NULL DEFAULT 0,
   `doc_id` bigint(20) unsigned NOT NULL DEFAULT 0,
   `doc_updater` bigint(20) unsigned NOT NULL DEFAULT 0,
   `ord` int(10) unsigned NOT NULL DEFAULT 0,
@@ -155,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `rwup_role` (
   `deleted_at` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -179,12 +198,12 @@ CREATE TABLE IF NOT EXISTS `rwup_token` (
   `platform` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `token` char(40) NOT NULL DEFAULT '',
   `token_key` char(40) NOT NULL DEFAULT '',
-  `expire` int(10) unsigned NOT NULL DEFAULT 0,
+  `expire` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sess` (`token`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4;
 
 -- 数据导出被取消选择。
 
