@@ -15,4 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 class LogModel extends BaseModel
 {
     protected $table = "log";
+
+    const TYPE_LOGIN = 1;
 }

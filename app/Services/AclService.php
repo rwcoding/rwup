@@ -21,6 +21,14 @@ class AclService
         return $cache;
     }
 
+    public static function verifyUser(UserModel $user, string $permission): bool
+    {
+        if ($user->is_super) {
+            return true;
+        }
+        return in_array($permission, self::getPermissionByRoles($user->roles));
+    }
+
     public static function verify(string $roles, string $permission): bool
     {
         return in_array($permission, self::getPermissionByRoles($roles));

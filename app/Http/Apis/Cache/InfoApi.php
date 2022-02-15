@@ -25,6 +25,7 @@ class InfoApi extends BaseApi
         if (!$model) {
             return '无效的数据';
         }
+        $model->v = unserialize($model->v);
         return $model->toArray();
     }
 }

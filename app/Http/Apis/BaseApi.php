@@ -15,6 +15,17 @@ abstract class BaseApi
 
     protected array $notNeedFormatField = [];
 
+    public function parse(): void
+    {
+        $this->attributes = Context::data();
+        if (isset($this->rules()['page']) && !isset($this->attributes['page'])) {
+            $this->attributes['page'] = 1;
+        }
+        if (isset($this->rules()['page_size']) && !isset($this->attributes['page_size'])) {
+            $this->attributes['page_size'] = 10;
+        }
+    }
+
     public function rules(): array
     {
         return [];
@@ -34,7 +45,7 @@ abstract class BaseApi
 
     public function getToken(): string
     {
-        return Context::request()->header('Ms-Token');
+        return Context::request()->header('X-Token');
     }
 
     public function getUser(): UserModel
@@ -49,17 +60,26 @@ abstract class BaseApi
 
     public function callAction($method, $parameters): string|Response
     {
-        $this->attributes = Context::data();
+        $this->parse();
         if ($rules = $this->rules()) {
             $validator = Validator::make($this->attributes, $rules);
             if ($validator->fails()) {
-                return implode(";", $validator->errors()->all());
+                return ApiService::failure(implode(";", $validator->errors()->all()));
             }
         }
         $ret = $this->{$method}();
         if (is_array($ret)) {
             return ApiService::success($ret);
         }
-        return $ret;
+        if (is_bool($ret)) {
+            if ($ret) {
+                return ApiService::success();
+            }
+            return ApiService::failure();
+        }
+        if (str_starts_with($ret, '{')) {
+            return $ret;
+        }
+        return ApiService::failure($ret);
     }
 }

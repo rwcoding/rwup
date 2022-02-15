@@ -20,10 +20,10 @@ class ListApi extends BaseApi
         return [
             "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "type" => "required|numeric|min:1",
-            "group_id" => "required|numeric|min:1",
-            "name" => "required|string|min:1|max:100",
-            "permission" => "required|string|min:1|max:100",
+            "type" => "numeric|min:1",
+            "group_id" => "numeric|min:1",
+            "name" => "string|min:1|max:100",
+            "permission" => "string|min:1|max:100",
         ];
     }
 

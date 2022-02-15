@@ -14,7 +14,7 @@ class TokenService
             $msg = "无效的token";
             return null;
         }
-        if (time() - $tm->created_at > 30*24*60*60) {
+        if (time() - strtotime($tm->created_at) > env('TOKEN_TIMEOUT', 2592000)) {
             $tm->delete();
             $msg = "token已过期";
             return null;
@@ -26,8 +26,13 @@ class TokenService
     {
         // 不允许多端登陆
         TokenModel::where(['platform'=>$platform, 'user_id'=>$userId])->delete();
-        $token = md5($userId.'-'.Str::random(40));
-        $tokenKey = md5($userId.'='.Str::random(40));
+        if (env('APP_ENV') == 'development') {
+            $token = md5($userId.'-token');
+            $tokenKey = md5($userId.'-token-key');
+        } else {
+            $token = md5($userId.'-'.Str::random(40));
+            $tokenKey = md5($userId.'='.Str::random(40));
+        }
         $model = new TokenModel();
         $model->user_id = $userId;
         $model->platform = $platform;

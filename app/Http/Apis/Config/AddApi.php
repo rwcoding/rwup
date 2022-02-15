@@ -35,7 +35,7 @@ class AddApi extends BaseApi
     public function index(): string|array
     {
         $model = ConfigService::set(trim($this->k), trim($this->v), $this->data_type);
-        if ($model) {
+        if (!$model) {
             return '添加失败';
         }
         return ['id' => $model->id];

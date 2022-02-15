@@ -20,15 +20,15 @@ class ListApi extends BaseApi
         return [
             "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "type" => "required|numeric|min:1",
-            "username" => "required|string|min:5|max:30",
-            "target" => "required|numeric|min:1",
+            "type" => "numeric|min:1",
+            "username" => "string|min:5|max:30",
+            "target" => "numeric|min:1",
         ];
     }
 
     public function index(): string|array
     {
-        $query = UserModel::query();
+        $query = LogModel::query();
         if ($this->username) {
             $user = UserModel::whereUsername($this->username)->first();
             if (!$user) {
@@ -56,7 +56,7 @@ class ListApi extends BaseApi
             ->select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
-            ->orderBy("id")->get()->toArray();
+            ->orderByDesc("id")->get()->toArray();
 
         return [
             'datas' => $data,

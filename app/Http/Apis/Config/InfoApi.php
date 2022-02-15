@@ -21,8 +21,7 @@ class InfoApi extends BaseApi
     public function index(): string|array
     {
         $model = ConfigModel::select(['id', 'name', 'k', 'v', 'data_type', 'created_at'])
-            ->whereId($this->id)
-            ->first();
+            ->find($this->id);
         if (!$model) {
             return '无效的配置';
         }

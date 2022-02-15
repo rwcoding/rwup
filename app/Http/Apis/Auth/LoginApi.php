@@ -3,6 +3,7 @@
 namespace App\Http\Apis\Auth;
 
 use App\Http\Apis\BaseApi;
+use App\Services\LogService;
 use App\Services\TokenService;
 use App\Services\UserService;
 
@@ -33,6 +34,8 @@ class LoginApi extends BaseApi
         if (!($arr = TokenService::newToken($user->id, $this->platform))) {
             return "认证写入失败";
         }
+
+        LogService::login($user, $this->getRequest()->ip());
 
         return [
             'token' => $arr['token'],

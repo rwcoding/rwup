@@ -21,7 +21,7 @@ class CacheService
         CacheModel::whereK($key)->delete();
         return CacheModel::insert([
             'k' => $key,
-            'v' => $value,
+            'v' => serialize($value),
             'expire' => DateService::afterDay(30)
         ]);
     }

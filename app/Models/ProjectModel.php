@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $manager 管理员集合
  * @property string $allow_read 可读用户集合
  * @property string $allow_write 可写用户集合
+ * @property int $doc_num 文档数量
+ * @property int $test_num 测试数量
+ * @property int $bug_num Bug数量
  * @property int $doc_id 更新文档ID
  * @property int $doc_updater 更新用户
  * @property int $ord 排序

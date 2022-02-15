@@ -16,9 +16,9 @@ class Auth
     {
         $api = $request->getPathInfo();
         $current = time();
-        $time = $request->header("Ms-Time");
-        $token = $request->header("Ms-Token");
-        $sign = $request->header("Ms-Sign");
+        $time = $request->header("X-Time");
+        $token = $request->header("X-Token");
+        $sign = $request->header("X-Sign");
 
         // header 参数必需
         if (!$time || !$token || !$sign) {
@@ -30,35 +30,43 @@ class Auth
             return ApiService::failure("请求过期");
         }
 
+        $body = $request->getContent();
+
         // 允许所有未登陆api
-        if (str_starts_with($api, "/api/login")) {
-            return $next($request);
+        if (!str_starts_with($api, "/api/login")) {
+            $msg = "";
+
+            // token验证
+            if (!($tm = TokenService::verify($token, $msg))) {
+                return ApiService::failure($msg);
+            }
+
+            if (md5($api . $time . $token . $body . $tm->token_key) !== $sign) {
+                return ApiService::failure("签名错误");
+            }
+
+            // 用户验证
+            if (!($user = UserService::verify($tm->user_id, $msg))) {
+                return ApiService::failure($msg);
+            }
+
+            // 权限验证
+            if (!AclService::verifyUser($user, $api)) {
+                return ApiService::failure("您没有权限，请联系管理员");
+            }
+            Context::setUser($user);
         }
 
-        $msg = "";
-
-        // token验证
-        if (!($tm = TokenService::verify($token, $msg))) {
-            return ApiService::failure($msg);
-        }
-
-        // 用户验证
-        if (!($user = UserService::verify($tm->user_id, $msg))) {
-            return ApiService::failure($msg);
-        }
-
-        // 权限验证
-        if (!AclService::verify($user->roles, $api)) {
-            return ApiService::failure("您没有权限，请联系管理员");
-        }
-
-        if (!($data = json_decode($request->getContent(), true))) {
-            return ApiService::failure("数据格式错误");
+        if (!$body) {
+            $data = [];
+        } else {
+            if (!($data = json_decode($body, true))) {
+                return ApiService::failure("数据格式错误");
+            }
         }
 
         Context::setRequest($request);
         Context::setData($data);
-        Context::setUser($user);
 
         return $next($request);
     }

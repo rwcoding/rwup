@@ -11,7 +11,7 @@ class Context
     private static array $data = [];
     private static Request $request;
 
-    public static function setUser(UserModel $user)
+    public static function setUser(UserModel $user): void
     {
         self::$user = $user;
     }
@@ -21,7 +21,7 @@ class Context
         return self::$user;
     }
 
-    public static function setData(array $data)
+    public static function setData(array $data): void
     {
         self::$data = $data;
     }
@@ -31,7 +31,7 @@ class Context
         return self::$data;
     }
 
-    public static function setRequest(Request $request)
+    public static function setRequest(Request $request): void
     {
         self::$request = $request;
     }
@@ -41,7 +41,7 @@ class Context
         return self::$request;
     }
 
-    public static function reset()
+    public static function reset(): void
     {
         self::$user = null;
         self::$data = [];
