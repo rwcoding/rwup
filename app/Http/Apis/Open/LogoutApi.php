@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Apis\Auth;
+namespace App\Http\Apis\Open;
 
 use App\Http\Apis\BaseApi;
 use App\Services\ApiService;

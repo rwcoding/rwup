@@ -7,6 +7,7 @@ use App\Services\ApiService;
 use App\Services\ConfigService;
 
 /**
+ * @property string name
  * @property string k
  * @property string v
  * @property string data_type
@@ -34,7 +35,7 @@ class AddApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = ConfigService::set(trim($this->k), trim($this->v), $this->data_type);
+        $model = ConfigService::set(trim($this->k), trim($this->v), $this->data_type, $this->name);
         if (!$model) {
             return '添加失败';
         }

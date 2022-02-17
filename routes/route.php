@@ -1,8 +1,9 @@
 <?php
 
 return [
-    '/login'  => '\App\Http\Apis\Auth\LoginApi',
-    '/logout' => '\App\Http\Apis\Auth\LogoutApi',
+    '/open/login'  => '\App\Http\Apis\Open\LoginApi',
+    '/open/logout' => '\App\Http\Apis\Open\LogoutApi',
+    '/open/config' => '\App\Http\Apis\Open\ConfigApi',
 
     '/profile/info'     => '\App\Http\Apis\Profile\InfoApi',
     '/profile/edit'     => '\App\Http\Apis\Profile\EditApi',

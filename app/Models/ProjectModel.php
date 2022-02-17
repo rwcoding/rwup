@@ -31,6 +31,6 @@ class ProjectModel extends BaseModel
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(UserModel::class, 'id', 'doc_updater');
+        return $this->belongsTo(UserModel::class, 'doc_updater', 'id');
     }
 }

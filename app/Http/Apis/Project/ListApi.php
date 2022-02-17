@@ -29,7 +29,7 @@ class ListApi extends BaseApi
             }, 'updater'=>function($query) {
                 $query->select(['id', 'name']);
             }])
-            ->select(['id', 'name', 'created_at'])
+            ->select(['id', 'doc_id', 'doc_updater', 'name', 'doc_num', 'bug_num', 'test_num', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderBy("ord")

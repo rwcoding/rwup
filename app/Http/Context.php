@@ -9,7 +9,7 @@ class Context
 {
     private static ?UserModel $user;
     private static array $data = [];
-    private static Request $request;
+    private static ?Request $request;
 
     public static function setUser(UserModel $user): void
     {
@@ -45,5 +45,6 @@ class Context
     {
         self::$user = null;
         self::$data = [];
+        self::$request = null;
     }
 }

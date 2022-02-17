@@ -8,14 +8,14 @@ class ConfigService
 {
     private static array $data = [];
 
-    public static function get(string $key): mixed
+    public static function get(string $key, $default = null): mixed
     {
         if (isset(self::$data[$key])) {
             return self::$data[$key];
         }
         $config = ConfigModel::whereK($key)->first();
         if (!$config) {
-            return false;
+            return $default;
         } else {
             return self::setLocal($config);
         }
@@ -38,7 +38,7 @@ class ConfigService
         return self::$data[$config->k] = $config->v;
     }
 
-    public static function set(string $key, string $value, string $dataType): ?ConfigModel
+    public static function set(string $key, string $value, string $dataType = 'string', string $name = ''): ?ConfigModel
     {
         $config = ConfigModel::whereK($key)->first();
         if (!$config) {
@@ -46,6 +46,7 @@ class ConfigService
         }
         $config->k = $key;
         $config->v = $value;
+        $config->name = $name;
         $config->data_type = $dataType;
         if ($config->save()) {
             self::setLocal($config);

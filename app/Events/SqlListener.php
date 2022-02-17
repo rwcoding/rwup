@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Events;
 
 use Illuminate\Database\Events\QueryExecuted;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
 
-class DbListener
+class SqlListener
 {
     public function handle(QueryExecuted $event): void
     {

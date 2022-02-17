@@ -9,6 +9,7 @@ use App\Services\TokenService;
 use App\Services\UserService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class Auth
 {
@@ -33,14 +34,14 @@ class Auth
         $body = $request->getContent();
 
         // 允许所有未登陆api
-        if (!str_starts_with($api, "/api/login")) {
+        if (!str_starts_with($api, "/api/open")) {
             $msg = "";
 
             // token验证
             if (!($tm = TokenService::verify($token, $msg))) {
                 return ApiService::failure($msg);
             }
-
+            Log::info($api . $time . $token . $body . $tm->token_key);
             if (md5($api . $time . $token . $body . $tm->token_key) !== $sign) {
                 return ApiService::failure("签名错误");
             }
