@@ -10,7 +10,7 @@ use App\Services\ApiService;
  * @property string name
  * @property string phone
  */
-class EditApi extends BaseApi
+class UpdateApi extends BaseApi
 {
     public function rules(): array
     {

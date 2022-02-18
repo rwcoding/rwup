@@ -6,8 +6,9 @@ return [
     '/open/config' => '\App\Http\Apis\Open\ConfigApi',
 
     '/profile/info'     => '\App\Http\Apis\Profile\InfoApi',
-    '/profile/edit'     => '\App\Http\Apis\Profile\EditApi',
+    '/profile/update'     => '\App\Http\Apis\Profile\UpdateApi',
     '/profile/password' => '\App\Http\Apis\Profile\PasswordApi',
+    '/profile/config'   => '\App\Http\Apis\Profile\ConfigApi',
 
     '/cache/list' => '\App\Http\Apis\Cache\ListApi',
     '/cache/info' => '\App\Http\Apis\Cache\InfoApi',
@@ -48,7 +49,7 @@ return [
     '/user/list' => '\App\Http\Apis\User\ListApi',
     '/user/info' => '\App\Http\Apis\User\InfoApi',
     '/user/add' => '\App\Http\Apis\User\AddApi',
-    '/user/edit' => '\App\Http\Apis\User\EditApi',
+    '/user/update' => '\App\Http\Apis\User\UpdateApi',
     '/user/del' => '\App\Http\Apis\User\DelApi',
 
     '/acl/batch/query' => '\App\Http\Apis\Acl\BatchQueryApi',

@@ -33,6 +33,8 @@ class AddApi extends BaseApi
         ];
         if (!$this->isAdd) {
             $rules['id'] = "required|numeric|min:1";
+            unset($rules['username']);
+            $rules['password'] = "max:50";
         }
         return $rules;
     }
