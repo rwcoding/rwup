@@ -7,7 +7,7 @@ namespace App\Http\Apis\Config;
  * @property string v
  * @property string data_type
  */
-class EditApi extends AddApi
+class UpdateApi extends AddApi
 {
     protected bool $isAdd = false;
 }

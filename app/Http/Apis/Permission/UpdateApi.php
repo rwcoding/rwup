@@ -2,7 +2,7 @@
 
 namespace App\Http\Apis\Permission;
 
-class EditApi extends AddApi
+class UpdateApi extends AddApi
 {
     protected bool $isAdd = false;
 }

@@ -4,6 +4,7 @@ namespace App\Http\Apis\Profile;
 
 use App\Http\Apis\BaseApi;
 use App\Http\Context;
+use App\Services\AclService;
 use App\Services\RoleService;
 use App\Services\UserService;
 
@@ -13,6 +14,11 @@ class InfoApi extends BaseApi
     {
         $user = Context::user();
 
+        if ($user->is_super) {
+            $permissions = ['-1'];
+        } else {
+            $permissions = AclService::getPermissionByRoles($user->roles);
+        }
         return [
             'username' => $user->username,
             'name' => $user->name,
@@ -21,8 +27,7 @@ class InfoApi extends BaseApi
             'status' => $user->status,
             'is_super' => $user->is_super,
             'created_at' => $user->created_at,
-            'role_names' => RoleService::names(),
-            'status_names' => UserService::statusNames(),
+            'permissions' => $permissions
         ];
     }
 }

@@ -17,7 +17,7 @@ class ListApi extends BaseApi
     {
         return [
             "page"      => "required|numeric|min:1",
-            "page_size" => "required|numeric|min:5|max:20",
+            "page_size" => "required|numeric|min:5|max:50",
             "username"  => "string|min:5|max:20",
         ];
     }

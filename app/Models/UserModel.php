@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * @property string $username 用户名
  * @property string $salt 密码盐
@@ -17,6 +19,8 @@ namespace App\Models;
  */
 class UserModel extends BaseModel
 {
+    use SoftDeletes;
+
     const STATUS_OK   = 1;
     const STATUS_LOCK = 2;
 
