@@ -4,7 +4,6 @@ namespace App\Http\Apis\Permission;
 
 use App\Http\Apis\BaseApi;
 use App\Models\PermissionModel;
-use App\Services\ApiService;
 
 /**
  * @property string permission
@@ -22,7 +21,7 @@ class AddApi extends BaseApi
         $rules = [
             "name" => "required|min:2|max:100",
             "permission" => "required|min:2|max:100",
-            "group_id" => "required|numeric|min:1",
+            "group_id" => "required|numeric",
             "type" => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {

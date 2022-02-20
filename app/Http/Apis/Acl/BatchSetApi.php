@@ -26,7 +26,7 @@ class BatchSetApi extends BaseApi
 
     public function index(): string|array
     {
-        if ($this->permissions && PermissionModel::where(["id", 'in', $this->permissions])->count() != count($this->permissions)) {
+        if ($this->permissions && PermissionModel::whereIn("id", $this->permissions)->count() != count($this->permissions)) {
             return "权限集合有误";
         }
 
@@ -38,7 +38,7 @@ class BatchSetApi extends BaseApi
                 if ($this->permissions) {
                     $data = [];
                     $own = RolePermissionModel::whereRoleId($roleId)->pluck("permission")->toArray();
-                    foreach (PermissionModel::where(["id", 'in', $this->permissions])->pluck('permission') as $item) {
+                    foreach (PermissionModel::whereIn("id", $this->permissions)->pluck('permission') as $item) {
                         if (in_array($item, $own)) {
                             continue;
                         }
@@ -50,10 +50,10 @@ class BatchSetApi extends BaseApi
                 if (!$this->permissions) {
                     continue;
                 }
-                $permissions = PermissionModel::where(["id", 'in', $this->permissions])
+                $permissions = PermissionModel::whereIn("id", $this->permissions)
                     ->pluck("permission");
                 RolePermissionModel::where('role_id', $roleId)
-                    ->where(['permission', 'in', $permissions])->delete();
+                    ->whereIn('permission', $permissions)->delete();
             }
 
             AclService::updateCacheByRole($roleId);

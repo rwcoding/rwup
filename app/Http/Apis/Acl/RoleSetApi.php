@@ -28,14 +28,14 @@ class RoleSetApi extends BaseApi
         if (!$role) {
             return "无效的角色";
         }
-        if ($this->permissions && PermissionModel::where(["id", 'in', $this->permissions])->count() != count($this->permissions)) {
+        if ($this->permissions && PermissionModel::whereIn('id', $this->permissions)->count() != count($this->permissions)) {
             return "权限集合有误";
         }
 
         RolePermissionModel::whereRoleId($this->role_id)->delete();
         if ($this->permissions) {
             $data = [];
-            foreach (PermissionModel::where(["id", 'in', $this->permissions])->get() as $item) {
+            foreach (PermissionModel::whereIn("id", $this->permissions)->get() as $item) {
                 $data[] = ['role_id' => $this->role_id, 'permission' => $item->permission];
             }
             RolePermissionModel::insert($data);

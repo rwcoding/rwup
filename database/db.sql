@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `rwup_config` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `k` (`k`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- 数据导出被取消选择。
 
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `rwup_log` (
   KEY `type` (`type`),
   KEY `created_at` (`created_at`),
   KEY `adminer_id` (`user_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `rwup_project` (
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -171,10 +171,10 @@ CREATE TABLE IF NOT EXISTS `rwup_role` (
   `name` varchar(50) NOT NULL DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `deleted_at` int(10) unsigned DEFAULT 0,
+  `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- 数据导出被取消选择。
 
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `rwup_token` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sess` (`token`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4;
 
 -- 数据导出被取消选择。
 
@@ -219,12 +219,12 @@ CREATE TABLE IF NOT EXISTS `rwup_user` (
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态',
   `is_super` tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '是否超级管理员',
   `ip` varchar(20) NOT NULL DEFAULT '',
-  `created_at` int(10) unsigned DEFAULT 0,
-  `updated_at` int(10) unsigned DEFAULT 0,
-  `deleted_at` int(10) unsigned DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 -- 数据导出被取消选择。
 

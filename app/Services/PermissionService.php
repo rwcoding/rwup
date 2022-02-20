@@ -17,6 +17,6 @@ class PermissionService
 
     public static function groupNames(): array
     {
-        return PermissionGroupModel::select("id as k, name as v")->get()->toArray();
+        return PermissionGroupModel::select(["id as k", "name as v"])->get()->toArray();
     }
 }

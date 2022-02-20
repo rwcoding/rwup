@@ -24,7 +24,7 @@ class ListApi extends BaseApi
         $data = PermissionGroupModel::select(['id', 'name', 'ord'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
-            ->orderBy("id")->get()->toArray();
+            ->orderByDesc("id")->get()->toArray();
 
         $count = PermissionGroupModel::count();
 

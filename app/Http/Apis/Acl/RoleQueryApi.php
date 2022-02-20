@@ -26,7 +26,8 @@ class RoleQueryApi extends BaseApi
         if (!$role) {
             return "无效的角色";
         }
-        $groups = PermissionGroupModel::select(["id", "name"])->orderBy("ord")->get();
+        $groups = PermissionGroupModel::select(["id", "name"])->orderBy("ord")->get()->toArray();
+        $groups[] = ['id'=>0, 'name'=>'未定义分组'];
         $permissions = PermissionModel::select(["id", "permission", "name", "group_id", "type"])->get();
         $havePermissions = RolePermissionModel::whereRoleId($this->role_id)->select(["permission"])->pluck("permission");
         return [

@@ -29,6 +29,8 @@ return [
     '/permission/add' => '\App\Http\Apis\Permission\AddApi',
     '/permission/update' => '\App\Http\Apis\Permission\UpdateApi',
     '/permission/del' => '\App\Http\Apis\Permission\DelApi',
+    '/permission/shift' => '\App\Http\Apis\Permission\ShiftApi',
+    '/permission/config' => '\App\Http\Apis\Permission\ConfigApi',
     '/permission/group/list' => '\App\Http\Apis\Permission\Group\ListApi',
     '/permission/group/info' => '\App\Http\Apis\Permission\Group\InfoApi',
     '/permission/group/add' => '\App\Http\Apis\Permission\Group\AddApi',
