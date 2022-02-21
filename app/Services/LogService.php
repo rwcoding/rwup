@@ -7,24 +7,18 @@ use App\Models\UserModel;
 
 class LogService
 {
-    public static function add(int $userId, int $type, string $msg, string $ip = '', string $details = '', int $target = 0): bool
+    public static function new(): LogItemService
     {
-        $log = new LogModel();
-        $log->user_id = $userId;
-        $log->type = $type;
-        $log->msg = $msg;
-        $log->target = $target;
-        $log->details = $details;
-        $log->ip = $ip;
-        return $log->save();
+        return (new LogItemService());
     }
 
     public static function login(UserModel $user, string $ip): bool
     {
-        return self::add($user->id,
-                        LogModel::TYPE_LOGIN,
-                        $user->name . '登录',
-                        $ip);
+        return (new LogItemService())
+            ->userId($user->id)
+            ->type(LogModel::TYPE_LOGIN)
+            ->msg( $user->name . '登录')
+            ->ip($ip)->save();
     }
 
     public static function typeNames(): array
