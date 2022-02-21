@@ -4,7 +4,6 @@ namespace App\Http\Apis\Token;
 
 use App\Http\Apis\BaseApi;
 use App\Models\TokenModel;
-use App\Services\ApiService;
 
 /**
  * @property int id

@@ -20,9 +20,12 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = LogModel::select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'created_at'])
-            ->whereId($this->id)
-            ->first();
+        $model = LogModel::query()
+            ->with(['user'=>function($query){
+                $query->select(['id', 'name']);
+            }])
+            ->select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'details', 'created_at'])
+            ->find($this->id);
         if (!$model) {
             return '无效的数据';
         }

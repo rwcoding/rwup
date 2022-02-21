@@ -4,7 +4,11 @@ namespace App\Services;
 
 class ApiService
 {
-    public static function success(array $data = [], string $msg = '', int $code = 10000): string
+    const CODE_OK = 10000;
+    const CODE_LOGIN = 11000;
+    const CODE_ERR = 99999;
+
+    public static function success(array $data = [], string $msg = '', int $code = self::CODE_OK): string
     {
         $ret = [
             'code' => $code,
@@ -16,7 +20,7 @@ class ApiService
         return json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
-    public static function failure(string $msg = '', int $code = 99999): string
+    public static function failure(string $msg = '', int $code = self::CODE_ERR): string
     {
         return json_encode([
             'code' => $code,

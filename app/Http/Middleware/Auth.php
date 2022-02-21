@@ -39,7 +39,7 @@ class Auth
 
             // token验证
             if (!($tm = TokenService::verify($token, $msg))) {
-                return ApiService::failure($msg);
+                return ApiService::failure($msg, ApiService::CODE_LOGIN);
             }
             Log::info($api . $time . $token . $body . $tm->token_key);
             if (md5($api . $time . $token . $body . $tm->token_key) !== $sign) {

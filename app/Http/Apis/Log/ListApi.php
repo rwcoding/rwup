@@ -5,6 +5,7 @@ namespace App\Http\Apis\Log;
 use App\Http\Apis\BaseApi;
 use App\Models\LogModel;
 use App\Models\UserModel;
+use App\Services\LogService;
 
 /**
  * @property int page
@@ -20,9 +21,9 @@ class ListApi extends BaseApi
         return [
             "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
-            "type" => "numeric|min:1",
+            "type" => "numeric|min:0",
             "username" => "string|min:5|max:30",
-            "target" => "numeric|min:1",
+            "target" => "numeric|min:0",
         ];
     }
 
@@ -36,7 +37,8 @@ class ListApi extends BaseApi
                     'datas' => [],
                     'count' => 0,
                     'page' => $this->page,
-                    'page_size' => $this->page_size
+                    'page_size' => $this->page_size,
+                    'types' => LogService::typeNames()
                 ];
             }
             $query->where('user_id', $user->id);
@@ -53,6 +55,9 @@ class ListApi extends BaseApi
         $count = (clone $query)->count();
 
         $data = $query
+            ->with(['user'=>function($query) {
+                $query->select(['id', 'name']);
+            }])
             ->select(['id', 'user_id', 'type', 'msg', 'target', 'ip', 'created_at'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
@@ -62,7 +67,8 @@ class ListApi extends BaseApi
             'datas' => $data,
             'count' => $count,
             'page' => $this->page,
-            'page_size' => $this->page_size
+            'page_size' => $this->page_size,
+            'types' => LogService::typeNames()
         ];
     }
 }

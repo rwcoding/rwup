@@ -25,4 +25,9 @@ class UserModel extends BaseModel
     const STATUS_LOCK = 2;
 
     protected $table = "user";
+
+    public function isSuper(): bool
+    {
+        return $this->is_super > 0;
+    }
 }

@@ -26,4 +26,11 @@ class LogService
                         $user->name . '登录',
                         $ip);
     }
+
+    public static function typeNames(): array
+    {
+        return [
+            ['k' => LogModel::TYPE_LOGIN, 'v' => '登录'],
+        ];
+    }
 }

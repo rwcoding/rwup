@@ -51,11 +51,18 @@ class ListApi extends BaseApi
             ->orderByDesc("id")
             ->get()->toArray();
 
+        foreach ($data as &$item) {
+            $item['token'] = substr($item['token'], 0, 8) . '******' . substr($item['token'], -8);
+        }
+        $platforms = [
+            ['k'=>10, 'v'=>'web']
+        ];
         return [
             'datas' => $data,
             'count' => $count,
-            'page' => $this->page,
-            'page_size' => $this->page_size
+            'page'  => $this->page,
+            'page_size' => $this->page_size,
+            'platforms' => $platforms
         ];
     }
 }

@@ -66,4 +66,15 @@ class ConfigService
         }
         return false;
     }
+
+    public static function typeNames(): array
+    {
+        return [
+            ['k' => 'string', 'v' => '文本'],
+            ['k' => 'json', 'v' => 'JSON'],
+            ['k' => 'int', 'v' => '整数'],
+            ['k' => 'float', 'v' => '浮点数'],
+            ['k' => 'array', 'v' => '分隔数组'],
+        ];
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Apis\Config;
 
 use App\Http\Apis\BaseApi;
 use App\Models\ConfigModel;
+use App\Services\ConfigService;
 
 /**
  * @property int page
@@ -40,7 +41,8 @@ class ListApi extends BaseApi
             'datas' => $data,
             'count' => $count,
             'page' => $this->page,
-            'page_size' => $this->page_size
+            'page_size' => $this->page_size,
+            'types' => ConfigService::typeNames()
         ];
     }
 }

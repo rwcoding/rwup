@@ -5,6 +5,8 @@ return [
     '/open/logout' => '\App\Http\Apis\Open\LogoutApi',
     '/open/config' => '\App\Http\Apis\Open\ConfigApi',
 
+    '/home/dashboard' => '\App\Http\Apis\Home\DashboardApi',
+
     '/profile/info'     => '\App\Http\Apis\Profile\InfoApi',
     '/profile/update'     => '\App\Http\Apis\Profile\UpdateApi',
     '/profile/password' => '\App\Http\Apis\Profile\PasswordApi',
@@ -43,10 +45,10 @@ return [
     '/role/update' => '\App\Http\Apis\Role\UpdateApi',
     '/role/del' => '\App\Http\Apis\Role\DelApi',
 
-    '/token/list' => '\App\Http\Apis\Token\ListApi',
-    '/token/info' => '\App\Http\Apis\Token\InfoApi',
-    '/token/clean' => '\App\Http\Apis\Token\CleanApi',
-    '/token/del' => '\App\Http\Apis\Token\DelApi',
+    '/session/list' => '\App\Http\Apis\Token\ListApi',
+    '/session/info' => '\App\Http\Apis\Token\InfoApi',
+    '/session/clean' => '\App\Http\Apis\Token\CleanApi',
+    '/session/del' => '\App\Http\Apis\Token\DelApi',
 
     '/user/list' => '\App\Http\Apis\User\ListApi',
     '/user/info' => '\App\Http\Apis\User\InfoApi',
