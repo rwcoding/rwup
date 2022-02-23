@@ -60,7 +60,7 @@ class AddApi extends BaseApi
         $model->phone = $this->phone;
         $model->roles = $this->roles ? implode(',', $this->roles) : '';
         $model->status = $this->status;
-        if ($this->getUser()->id == 1) {
+        if ($this->getUser()->id == 1 && $model->id != 1) {
             $model->is_super = $this->is_super;
         }
         $model->ip = $this->getRequest()->ip() ?? '';

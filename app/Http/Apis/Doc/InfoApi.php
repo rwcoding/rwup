@@ -20,7 +20,13 @@ class InfoApi extends BaseApi
     public function index(): string|array
     {
         $model = DocModel::query()
-                ->select(['id', 'name', 'sname', 'is_share', 'share_code', 'content', 'created_at', 'updated_at'])
+                ->select([
+                    'id', 'name', 'sname', 'sign',
+                    'project_id', 'directory_id',
+                    'is_share', 'share_code',
+                    'created_at', 'updated_at', 'ord',
+                    'is_rw', 'is_rb', 'is_ww', 'is_wb'
+                ])
                 ->find($this->id);
         if (!$model) {
             return '无效的数据';

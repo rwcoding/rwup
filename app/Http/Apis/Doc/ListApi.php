@@ -10,6 +10,7 @@ use App\Models\DocModel;
  * @property int page_size
  * @property int project_id
  * @property int directory_id
+ * @property string name
  */
 class ListApi extends BaseApi
 {
@@ -32,13 +33,29 @@ class ListApi extends BaseApi
         if ($this->directory_id) {
             $query->where('directory_id', $this->directory_id);
         }
+        if ($this->name) {
+            $query->where('name', 'like', '%'.$this->name.'%');
+        }
         $count = (clone $query)->count();
         $data = $query
-            ->select(['id', 'name', 'sname', 'is_share', 'share_code', 'created_at'])
+            ->with([
+                'user'=>function($query){
+                    $query->select(['id', 'name', 'username']);
+                },
+                'directory'=>function($query){
+                    $query->select(['id', 'name']);
+                }
+            ])
+            ->select([
+                'id', 'name', 'sname', 'sign', 'user_id', 'directory_id',
+                'is_share', 'share_code',
+                'created_at', 'updated_at','ord',
+                'is_rw', 'is_rb', 'is_ww', 'is_wb'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)
             ->orderByDesc("ord")
-            ->get();
+            ->get()
+            ->makeHidden(['user_id', 'directory_id']);
 
         return [
             'datas' => $data,

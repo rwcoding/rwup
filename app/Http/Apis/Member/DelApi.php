@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Apis\Doc;
+namespace App\Http\Apis\Member;
 
 use App\Http\Apis\BaseApi;
-use App\Models\DocModel;
-use App\Models\ProjectModel;
-use App\Services\AclService;
+use App\Models\ProjectMemberModel;
 use App\Services\ApiService;
 
 /**
@@ -22,20 +20,10 @@ class DelApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = DocModel::find($this->id);
+        $model = ProjectMemberModel::find($this->id);
         if (!$model) {
             return '无效的数据';
         }
-        $project = $model->project;
-
-        // 权限验证
-        if (!AclService::allowWriteProject($project, $this->getUser())) {
-            return "您没有权限编辑该工程";
-        }
-        if (!AclService::allowWriteDoc($model, $this->getUser())) {
-            return "您没有权限编辑该文档";
-        }
-
         if (!$model->delete()) {
             return '删除失败';
         }

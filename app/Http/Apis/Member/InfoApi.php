@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Apis\Project;
+namespace App\Http\Apis\Member;
 
 use App\Http\Apis\BaseApi;
+use App\Models\ProjectMemberModel;
 use App\Models\ProjectModel;
-use App\Models\UserModel;
-use App\Services\ApiService;
-use phpDocumentor\Reflection\Project;
 
 /**
  * @property int id
@@ -22,13 +20,12 @@ class InfoApi extends BaseApi
 
     public function index(): string|array
     {
-        $model = ProjectModel::query()
-                ->with(['doc'=>function($query) {
-                    $query->select(['id', 'name', 'updated_at']);
-                }, 'updater'=>function($query) {
-                    $query->select(['id', 'name']);
+        $model = ProjectMemberModel::query()
+                ->with(['user'=>function($query) {
+                    $query->select(['id', 'name', 'username']);
                 }])
-                ->select(['id', 'sign', 'name', 'sname', 'ord', 'created_at'])
+                ->select(['id', 'user_id', 'project_id', 'doc_read', 'doc_write',
+                    'test_read','test_write', 'bug_read', 'bug_write', 'manage'])
                 ->find($this->id);
         if (!$model) {
             return '无效的数据';

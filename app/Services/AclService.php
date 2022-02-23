@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\CacheModel;
 use App\Models\DocModel;
-use App\Models\PermissionModel;
 use App\Models\ProjectModel;
 use App\Models\RolePermissionModel;
 use App\Models\UserModel;
@@ -50,7 +48,7 @@ class AclService
         return $data;
     }
 
-    public static function updateCacheByRole(int $roleId)
+    public static function updateCacheByRole(int $roleId): void
     {
         $us = UserModel::whereRaw("FIND_IN_SET(?, roles)", $roleId)
             ->groupBy("roles")->get();
@@ -59,23 +57,32 @@ class AclService
         }
     }
 
-    public static function allowReadProject(ProjectModel $project, int $userId): bool
+    //todo rw
+    public static function allowReadProject(ProjectModel $project, UserModel $user): bool
     {
-        return in_array($userId, explode(',',$project->allow_read));
+        if ($user->is_super) {
+            return true;
+        }
+        return true;
     }
 
-    public static function allowWriteProject(ProjectModel $project, int $userId): bool
+    public static function allowWriteProject(ProjectModel $project, UserModel $user): bool
     {
-        return in_array($userId, explode(',',$project->allow_write));
+        if ($user->is_super) {
+            return true;
+        }
+        return true;
     }
 
-    public static function allowReadDoc(DocModel $doc, int $userId): bool
+    public static function allowReadDoc(DocModel $doc, UserModel $user): bool
     {
-        return !in_array($userId, explode(',',$doc->deny_read));
+        return true;
+//        return !in_array($userId, explode(',',$doc->deny_read));
     }
 
-    public static function allowWriteDoc(DocModel $doc, int $userId): bool
+    public static function allowWriteDoc(DocModel $doc, UserModel $user): bool
     {
-        return !in_array($userId, explode(',',$doc->deny_write));
+        return true;
+//        return !in_array($userId, explode(',',$doc->deny_write));
     }
 }

@@ -11,6 +11,7 @@ class ConfigApi extends BaseApi
     {
         return [
             'app' => ConfigService::get('app', '项目管理系统'),
+            'timezone' => ConfigService::get('timezone', 'Asia/Shanghai')
         ];
     }
 }

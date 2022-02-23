@@ -67,6 +67,12 @@ return [
     '/project/update' => '\App\Http\Apis\Project\UpdateApi',
     '/project/del' => '\App\Http\Apis\Project\DelApi',
 
+    '/project/member/list' => '\App\Http\Apis\Member\ListApi',
+    '/project/member/info' => '\App\Http\Apis\Member\InfoApi',
+    '/project/member/add' => '\App\Http\Apis\Member\AddApi',
+    '/project/member/update' => '\App\Http\Apis\Member\UpdateApi',
+    '/project/member/del' => '\App\Http\Apis\Member\DelApi',
+
     '/directory/list' => '\App\Http\Apis\Directory\ListApi',
     '/directory/info' => '\App\Http\Apis\Directory\InfoApi',
     '/directory/add' => '\App\Http\Apis\Directory\AddApi',
@@ -78,4 +84,6 @@ return [
     '/doc/add' => '\App\Http\Apis\Doc\AddApi',
     '/doc/update' => '\App\Http\Apis\Doc\UpdateApi',
     '/doc/del' => '\App\Http\Apis\Doc\DelApi',
+    '/doc/access/info' => '\App\Http\Apis\Doc\AccessInfoApi',
+    '/doc/access/update' => '\App\Http\Apis\Doc\AccessUpdateApi',
 ];

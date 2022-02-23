@@ -8,6 +8,8 @@ use App\Services\UserService;
 
 /**
  * @property string name
+ * @property string sname
+ * @property string sign
  * @property array<int> manager
  * @property array<int> allow_read
  * @property array<int> allow_write
@@ -22,9 +24,8 @@ class AddApi extends BaseApi
     {
         $rules = [
             "name" => "required|min:2|max:100",
-            "user_manage" => "array",
-            "allow_read" => "array",
-            "allow_write" => "array",
+            "sname" => "min:1|max:20",
+            "sign" => "required|min:2|max:100",
             "ord" => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {
@@ -35,19 +36,25 @@ class AddApi extends BaseApi
 
     public function index(): string|array
     {
+        $sm = ProjectModel::where('sign', $this->sign)->first();
         if (!$this->isAdd) {
             $model = ProjectModel::find($this->id);
             if (!$model) {
                 return '无效的数据';
             }
+            if ($sm && $model->id != $sm->id) {
+                return '标识已经存在';
+            }
         } else {
+            if (ProjectModel::where('sign', $this->sign)->first()) {
+                return '标识已经存在';
+            }
             $model = new ProjectModel();
         }
 
+        $model->sign = $this->sign;
         $model->name = $this->name;
-        $model->manager = $this->manager ? implode(',', $this->manager) : '';
-        $model->allow_read = $this->allow_read ? implode(',', $this->allow_read) : '';
-        $model->allow_write = $this->allow_write ? implode(',', $this->allow_write) : '';
+        $model->sname = $this->sname ?: $this->name;
         $model->ord = $this->ord;
 
         if (!$model->save()) {

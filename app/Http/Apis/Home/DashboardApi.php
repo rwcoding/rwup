@@ -4,6 +4,7 @@ namespace App\Http\Apis\Home;
 
 use App\Http\Apis\BaseApi;
 use App\Models\ProjectModel;
+use App\Models\ProjectMemberModel;
 
 /**
  * @property int page
@@ -16,7 +17,16 @@ class DashboardApi extends BaseApi
         $user = $this->getUser();
         $query = ProjectModel::query();
         if (!$user->isSuper()) {
-            $query->whereRaw("FIND_IN_SET(?,allow_read)", $user->id);
+            $projectIdList = ProjectMemberModel::query()
+                ->select('user_id')
+                ->where('doc_read', 1)
+                ->where('user_id', $user->id)
+                ->pluck('project_id');
+            if (!$projectIdList) {
+                return ['datas'=>[]];
+            } else {
+                $query->whereIn('id', $projectIdList);
+            }
         }
         $count = (clone $query)->count();
         $data = $query
@@ -32,9 +42,6 @@ class DashboardApi extends BaseApi
 
         return [
             'datas' => $data,
-            'count' => $count,
-            'page' => $this->page,
-            'page_size' => $this->page_size
         ];
     }
 }

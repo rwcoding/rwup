@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property string $name 名称
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DirectoryModel extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = "directory";
 
     public function project(): BelongsTo

@@ -24,29 +24,32 @@ class AddApi extends BaseApi
     {
         $rules = [
             "name"       => "required|min:2|max:100",
-            "project_id" => "required|numeric|min:1",
             "pid"        => "required|numeric|min:0",
             "ord"        => "required|numeric|min:1",
         ];
         if (!$this->isAdd) {
             $rules['id'] = "required|numeric|min:1";
+        } else {
+            $rules['project_id'] = "required|numeric|min:1";
         }
         return $rules;
     }
 
     public function index(): string|array
     {
-        $userId = $this->getUser()->id;
-
         if (!$this->isAdd) {
             $model = DirectoryModel::find($this->id);
             if (!$model) {
                 return '无效的数据';
             }
+            if ($model->id == $this->pid) {
+                return '无效的上级目录';
+            }
             $project = $model->project;
         } else {
             $project = ProjectModel::find($this->project_id);
             $model = new DirectoryModel();
+            $model->project_id = $this->project_id;
         }
 
         if (!$project) {
@@ -54,11 +57,10 @@ class AddApi extends BaseApi
         }
 
         // 权限验证
-        if (!AclService::allowWriteProject($project, $userId)) {
+        if (!AclService::allowWriteProject($project, $this->getUser())) {
             return "您没有权限编辑该工程";
         }
 
-        $model->project_id = $this->project_id;
         $model->name = $this->name;
         $model->pid = $this->pid;
         $model->ord = $this->ord;

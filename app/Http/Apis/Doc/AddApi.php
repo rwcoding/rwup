@@ -12,14 +12,12 @@ use Illuminate\Support\Str;
 
 /**
  * @property string name
+ * @property string sign
  * @property string sname
  * @property string project_id
  * @property string directory_id
- * @property string content
  * @property string share_code
  * @property int is_share
- * @property array<int> deny_read
- * @property array<int> deny_write
  * @property int ord
  * @property int id
  */
@@ -34,8 +32,6 @@ class AddApi extends BaseApi
         $rules = [
             "name" => "required|min:2|max:100",
             "sname" => "required|min:2|max:20",
-            "deny_read" => "array",
-            "deny_write" => "array",
             "project_id" => "required|numeric|min:1",
             "directory_id" => "required|numeric|min:0",
             "is_share" => "required|numeric|min:0",
@@ -49,8 +45,8 @@ class AddApi extends BaseApi
 
     public function index(): string|array
     {
-        $userId = $this->getUser()->id;
-
+        $user = $this->getUser();
+        $userId = $user->id;
         if (!$this->isAdd) {
             $model = DocModel::find($this->id);
             if (!$model) {
@@ -61,6 +57,9 @@ class AddApi extends BaseApi
             $project = ProjectModel::find($this->project_id);
             $model = new DocModel();
             $model->user_id = $userId;
+            $model->project_id = $this->project_id;
+            $model->content = "";
+            $model->content_json = "";
         }
 
         if (!$project) {
@@ -68,26 +67,22 @@ class AddApi extends BaseApi
         }
 
         // 权限验证
-        if (!AclService::allowWriteProject($project, $userId)) {
+        if (!AclService::allowWriteProject($project, $user)) {
             return "您没有权限编辑该工程";
         }
-        if (!$this->isAdd && !AclService::allowWriteDoc($model, $userId)) {
+        if (!$this->isAdd && !AclService::allowWriteDoc($model, $user)) {
             return "您没有权限编辑该文档";
         }
 
         $model->directory_id = $this->directory_id;
-        $model->project_id = $this->project_id;
+        $model->sign = $this->sign;
         $model->name = $this->name;
         $model->sname = $this->sname ?: $this->name;
-        $model->content = $this->content;
-        $model->deny_read = $this->deny_read ? implode(',', $this->deny_read) : '';
-        $model->deny_write = $this->deny_write ? implode(',', $this->deny_write) : '';
         $model->ord = $this->ord;
-        $model->is_share = $this->is_share ? 1:0;
-
-        if ($model->is_share && !$model->share_code) {
+        if (!$model->is_share && $this->is_share) {
             $model->share_code = md5(Str::random());
         }
+        $model->is_share = $this->is_share ? 1:0;
 
         if (!$model->save()) {
             return '保存失败';
