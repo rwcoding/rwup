@@ -25,7 +25,8 @@ class InfoApi extends BaseApi
                     'project_id', 'directory_id',
                     'is_share', 'share_code',
                     'created_at', 'updated_at', 'ord',
-                    'is_rw', 'is_rb', 'is_ww', 'is_wb'
+                    'is_rw', 'is_rb', 'is_ww', 'is_wb',
+                    'content'
                 ])
                 ->find($this->id);
         if (!$model) {

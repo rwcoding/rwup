@@ -1,16 +1,16 @@
 <?php
 
 return [
-    '/open/login'  => '\App\Http\Apis\Open\LoginApi',
+    '/open/login' => '\App\Http\Apis\Open\LoginApi',
     '/open/logout' => '\App\Http\Apis\Open\LogoutApi',
     '/open/config' => '\App\Http\Apis\Open\ConfigApi',
 
     '/home/dashboard' => '\App\Http\Apis\Home\DashboardApi',
 
-    '/profile/info'     => '\App\Http\Apis\Profile\InfoApi',
-    '/profile/update'     => '\App\Http\Apis\Profile\UpdateApi',
+    '/profile/info' => '\App\Http\Apis\Profile\InfoApi',
+    '/profile/update' => '\App\Http\Apis\Profile\UpdateApi',
     '/profile/password' => '\App\Http\Apis\Profile\PasswordApi',
-    '/profile/config'   => '\App\Http\Apis\Profile\ConfigApi',
+    '/profile/config' => '\App\Http\Apis\Profile\ConfigApi',
 
     '/cache/list' => '\App\Http\Apis\Cache\ListApi',
     '/cache/info' => '\App\Http\Apis\Cache\InfoApi',
@@ -86,4 +86,7 @@ return [
     '/doc/del' => '\App\Http\Apis\Doc\DelApi',
     '/doc/access/info' => '\App\Http\Apis\Doc\AccessInfoApi',
     '/doc/access/update' => '\App\Http\Apis\Doc\AccessUpdateApi',
+    '/doc/content' => '\App\Http\Apis\Doc\ContentApi',
+    '/doc/upload' => '\App\Http\Apis\Doc\UploadApi',
+    '/doc/tree' => '\App\Http\Apis\Doc\TreeApi',
 ];
