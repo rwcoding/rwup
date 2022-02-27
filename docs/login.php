@@ -1,10 +1,12 @@
 <?php
-class DocLoginUser {
+
+class DocLoginUser
+{
 
 }
 
 return new class {
-    #[Att(desc: "", aaa: "")]
+    #[Att(desc: "", rule: "")]
     public string $username = "";
 
     public string $password;
