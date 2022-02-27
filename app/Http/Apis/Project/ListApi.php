@@ -14,7 +14,7 @@ class ListApi extends BaseApi
     public function rules(): array
     {
         return [
-            "page"      => "required|numeric|min:1",
+            "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
         ];
     }
@@ -24,9 +24,9 @@ class ListApi extends BaseApi
         $query = ProjectModel::query();
         $count = (clone $query)->count();
         $data = $query
-            ->with(['doc'=>function($query) {
-                $query->select(['id', 'name', 'updated_at']);
-            }, 'updater'=>function($query) {
+            ->with(['doc' => function ($query) {
+                $query->select(['id', 'title', 'updated_at']);
+            }, 'updater' => function ($query) {
                 $query->select(['id', 'name']);
             }])
             ->select(['id', 'doc_id', 'doc_updater', 'sign', 'name', 'sname', 'doc_num', 'bug_num', 'test_num', 'ord', 'created_at'])

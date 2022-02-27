@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\DocMemberModel;
 use App\Models\DocModel;
+use App\Models\ProjectMemberModel;
 use App\Models\ProjectModel;
 use App\Models\RolePermissionModel;
 use App\Models\UserModel;
@@ -11,7 +13,7 @@ class AclService
 {
     public static function getPermissionByRoles(string $roles)
     {
-        $key = "acl-".str_replace($roles,',','-');
+        $key = "acl-" . str_replace($roles, ',', '-');
         $cache = CacheService::get($key);
         if ($cache === false) {
             return self::createCache($roles);
@@ -42,7 +44,7 @@ class AclService
         }
         $data = array_unique($data);
 
-        $key = "acl-".str_replace($roles,',','-');
+        $key = "acl-" . str_replace($roles, ',', '-');
         CacheService::set($key, $data);
 
         return $data;
@@ -57,13 +59,17 @@ class AclService
         }
     }
 
-    //todo rw
     public static function allowReadProject(ProjectModel $project, UserModel $user): bool
     {
         if ($user->is_super) {
             return true;
         }
-        return true;
+        $pm = ProjectMemberModel::where('project_id', $project->id)
+            ->where('user_id', $user->id)->first();
+        if ($pm && ($pm->manage || $pm->doc_read)) {
+            return true;
+        }
+        return false;
     }
 
     public static function allowWriteProject(ProjectModel $project, UserModel $user): bool
@@ -71,18 +77,65 @@ class AclService
         if ($user->is_super) {
             return true;
         }
-        return true;
+        $pm = ProjectMemberModel::where('project_id', $project->id)
+            ->where('user_id', $user->id)->first();
+        if ($pm && ($pm->manage || $pm->doc_write)) {
+            return true;
+        }
+        return false;
     }
 
     public static function allowReadDoc(DocModel $doc, UserModel $user): bool
     {
-        return true;
-//        return !in_array($userId, explode(',',$doc->deny_read));
+        if ($user->is_super) {
+            return true;
+        }
+
+        if ($doc->is_rw || $doc->is_rb) {
+            $ps = DocMemberModel::where('doc_id', $doc->id)
+                ->where('user_id', $user->id)->get();
+            $map = [];
+            foreach ($ps as $item) {
+                $map[$item->type] = true;
+            }
+            if ($doc->is_rw && empty($map['rw'])) {
+                return false;
+            }
+
+            if ($doc->is_rb && empty($map['rb'])) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return self::allowReadProject($doc->project, $user);
     }
 
     public static function allowWriteDoc(DocModel $doc, UserModel $user): bool
     {
-        return true;
-//        return !in_array($userId, explode(',',$doc->deny_write));
+        if ($user->is_super) {
+            return true;
+        }
+
+        if ($doc->is_ww || $doc->is_wb) {
+            $ps = DocMemberModel::where('doc_id', $doc->id)
+                ->where('user_id', $user->id)->get();
+            $map = [];
+            foreach ($ps as $item) {
+                $map[$item->type] = true;
+            }
+            if ($doc->is_ww && empty($map['ww'])) {
+                return false;
+            }
+
+            if ($doc->is_wb && empty($map['wb'])) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return self::allowWriteProject($doc->project, $user);
     }
 }

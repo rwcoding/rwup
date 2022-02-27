@@ -33,6 +33,7 @@ return [
     '/permission/del' => '\App\Http\Apis\Permission\DelApi',
     '/permission/shift' => '\App\Http\Apis\Permission\ShiftApi',
     '/permission/config' => '\App\Http\Apis\Permission\ConfigApi',
+    '/permission/route' => '\App\Http\Apis\Permission\RouteApi',
     '/permission/group/list' => '\App\Http\Apis\Permission\Group\ListApi',
     '/permission/group/info' => '\App\Http\Apis\Permission\Group\InfoApi',
     '/permission/group/add' => '\App\Http\Apis\Permission\Group\AddApi',
@@ -89,4 +90,5 @@ return [
     '/doc/content' => '\App\Http\Apis\Doc\ContentApi',
     '/doc/upload' => '\App\Http\Apis\Doc\UploadApi',
     '/doc/tree' => '\App\Http\Apis\Doc\TreeApi',
+    '/doc/search' => '\App\Http\Apis\Doc\SearchApi',
 ];

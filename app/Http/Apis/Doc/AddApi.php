@@ -11,9 +11,9 @@ use App\Services\DocService;
 use Illuminate\Support\Str;
 
 /**
- * @property string name
+ * @property string title
  * @property string sign
- * @property string sname
+ * @property string stitle
  * @property string project_id
  * @property string directory_id
  * @property string share_code
@@ -30,8 +30,8 @@ class AddApi extends BaseApi
     public function rules(): array
     {
         $rules = [
-            "name" => "required|min:2|max:100",
-            "sname" => "required|min:2|max:20",
+            "title" => "required|min:2|max:100",
+            "stitle" => "required|min:2|max:20",
             "project_id" => "required|numeric|min:1",
             "directory_id" => "required|numeric|min:0",
             "is_share" => "required|numeric|min:0",
@@ -67,22 +67,23 @@ class AddApi extends BaseApi
         }
 
         // 权限验证
-        if (!AclService::allowWriteProject($project, $user)) {
-            return "您没有权限编辑该工程";
+        if ($this->isAdd && !AclService::allowWriteProject($project, $user)) {
+            return "您没有权限编辑该项目";
         }
+        
         if (!$this->isAdd && !AclService::allowWriteDoc($model, $user)) {
             return "您没有权限编辑该文档";
         }
 
         $model->directory_id = $this->directory_id;
         $model->sign = $this->sign;
-        $model->name = $this->name;
-        $model->sname = $this->sname ?: $this->name;
+        $model->title = $this->title;
+        $model->stitle = $this->stitle ?: $this->title;
         $model->ord = $this->ord;
         if (!$model->is_share && $this->is_share) {
             $model->share_code = md5(Str::random());
         }
-        $model->is_share = $this->is_share ? 1:0;
+        $model->is_share = $this->is_share ? 1 : 0;
 
         if (!$model->save()) {
             return '保存失败';
@@ -92,7 +93,8 @@ class AddApi extends BaseApi
         $project->doc_updater = $userId;
         $project->save();
 
-        DocService::log($model, $userId);
+        // 修改内容时保存日志
+        // DocService::log($model, $userId);
 
         return ['id' => $model->id];
     }

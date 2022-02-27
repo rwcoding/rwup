@@ -1,0 +1,93 @@
+<?php
+return [
+    'api.open.login' => '登录',
+    'api.open.logout' => '退出',
+    'api.open.config' => '公共配置',
+
+    'api.home.dashboard' => '首页',
+
+    'api.profile.info' => '个人信息',
+    'api.profile.update' => '资料更新',
+    'api.profile.password' => '重置密码',
+    'api.profile.config' => '用户配置',
+
+    'api.cache.list' => '缓存列表',
+    'api.cache.info' => '缓存信息',
+    'api.cache.clean' => '缓存清理',
+    'api.cache.del' => '缓存删除',
+
+    'api.config.list' => '配置列表',
+    'api.config.info' => '配置信息',
+    'api.config.add' => '配置增加',
+    'api.config.update' => '配置编辑',
+    'api.config.del' => '配置删除',
+
+    'api.log.list' => '日志列表',
+    'api.log.info' => '日志信息',
+
+    'api.permission.list' => '权限列表',
+    'api.permission.info' => '权限信息',
+    'api.permission.add' => '权限增加',
+    'api.permission.update' => '权限更新',
+    'api.permission.del' => '权限删除',
+    'api.permission.shift' => '权限转移',
+    'api.permission.config' => '权限配置',
+    'api.permission.route' => '权限路由重置',
+    'api.permission.group.list' => '权限分组',
+    'api.permission.group.info' => '权限分组信息',
+    'api.permission.group.add' => '权限分组增加',
+    'api.permission.group.update' => '权限分组更新',
+    'api.permission.group.del' => '权限分组删除',
+
+    'api.role.list' => '角色列表',
+    'api.role.info' => '角色信息',
+    'api.role.add' => '角色增加',
+    'api.role.update' => '角色更新',
+    'api.role.del' => '角色删除',
+
+    'api.session.list' => '会话列表',
+    'api.session.info' => '会话信息',
+    'api.session.clean' => '会话清理',
+    'api.session.del' => '会话删除',
+
+    'api.user.list' => '用户列表',
+    'api.user.info' => '用户信息',
+    'api.user.add' => '用户新增',
+    'api.user.update' => '用户更新',
+    'api.user.del' => '用户删除',
+
+    'api.acl.batch.query' => '权限批量查询',
+    'api.acl.batch.set' => '权限批量设置',
+    'api.acl.role.query' => '角色权限查询',
+    'api.acl.role.set' => '角色权限设置',
+
+    'api.project.list' => '项目列表',
+    'api.project.info' => '项目信息',
+    'api.project.add' => '项目新增',
+    'api.project.update' => '项目更新',
+    'api.project.del' => '项目删除',
+
+    'api.project.member.list' => '项目成员',
+    'api.project.member.info' => '项目成员信息',
+    'api.project.member.add' => '项目成员新增',
+    'api.project.member.update' => '项目成员更新',
+    'api.project.member.del' => '项目成员删除',
+
+    'api.directory.list' => '目录列表',
+    'api.directory.info' => '目录信息',
+    'api.directory.add' => '目录新增',
+    'api.directory.update' => '目录更新',
+    'api.directory.del' => '目录删除',
+
+    'api.doc.list' => '文档列表',
+    'api.doc.info' => '文档信息',
+    'api.doc.add' => '文档增加',
+    'api.doc.update' => '文档更新',
+    'api.doc.del' => '文档删除',
+    'api.doc.access.info' => '文档权限查询',
+    'api.doc.access.update' => '文档权限设置',
+    'api.doc.content' => '文档内容更新',
+    'api.doc.upload' => '文件上传',
+    'api.doc.tree' => '文档目录树',
+    'api.doc.search' => '文档搜索',
+];

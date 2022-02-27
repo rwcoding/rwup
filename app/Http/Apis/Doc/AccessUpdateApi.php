@@ -54,9 +54,8 @@ class AccessUpdateApi extends BaseApi
             return '无效的工程';
         }
 
-        // todo 权限验证
-        if (!AclService::allowWriteDoc($model, $user)) {
-            return "您没有权限编辑该文档";
+        if (!AclService::allowWriteProject($project, $user)) {
+            return "您不能设置该文档权限，请联系项目管理员";
         }
 
         $model->is_rw = $this->is_rw ? 1 : 0;
@@ -77,11 +76,11 @@ class AccessUpdateApi extends BaseApi
 
         $insert = [];
         foreach ([
-            ['type'=>'rw', 'data'=>array_unique($this->rw_users)],
-            ['type'=>'rb', 'data'=>array_unique($this->rb_users)],
-            ['type'=>'ww', 'data'=>array_unique($this->ww_users)],
-            ['type'=>'wb', 'data'=>array_unique($this->wb_users)],
-        ] as $item) {
+                     ['type' => 'rw', 'data' => array_unique($this->rw_users)],
+                     ['type' => 'rb', 'data' => array_unique($this->rb_users)],
+                     ['type' => 'ww', 'data' => array_unique($this->ww_users)],
+                     ['type' => 'wb', 'data' => array_unique($this->wb_users)],
+                 ] as $item) {
             foreach ($item['data'] as $uname) {
                 if (!isset($nameToId[$uname])) {
                     continue;

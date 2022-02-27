@@ -6,6 +6,7 @@ use App\Http\Apis\BaseApi;
 use App\Models\DirectoryModel;
 use App\Models\DocModel;
 use App\Models\ProjectModel;
+use App\Services\AclService;
 
 /**
  * @property int id
@@ -29,7 +30,9 @@ class TreeApi extends BaseApi
             return '无效的工程';
         }
 
-        //todo 访问权限
+        if (!AclService::allowReadProject($project, $this->getUser())) {
+            return '您没有权限读取该项目';
+        }
 
         $this->dirs = DirectoryModel::where('project_id', $this->id)
             ->orderByDesc('ord')->get()->toArray();
@@ -61,7 +64,7 @@ class TreeApi extends BaseApi
             if ($v['directory_id'] == $pid) {
                 $result[] = [
                     'id' => $v['id'],
-                    'title' => $v['sname'] ?: $v['name'],
+                    'title' => $v['stitle'] ?: $v['title'],
                     'type' => 2,
                     'open' => false,
                     'children' => [],

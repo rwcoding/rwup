@@ -23,16 +23,16 @@ class DashboardApi extends BaseApi
                 ->where('user_id', $user->id)
                 ->pluck('project_id');
             if (!$projectIdList) {
-                return ['datas'=>[]];
+                return ['datas' => []];
             } else {
                 $query->whereIn('id', $projectIdList);
             }
         }
         $count = (clone $query)->count();
         $data = $query
-            ->with(['doc'=>function($query) {
-                $query->select(['id', 'name', 'updated_at']);
-            }, 'updater'=>function($query) {
+            ->with(['doc' => function ($query) {
+                $query->select(['id', 'title', 'updated_at']);
+            }, 'updater' => function ($query) {
                 $query->select(['id', 'name']);
             }])
             ->select(['id', 'doc_id', 'doc_updater', 'name', 'doc_num', 'bug_num', 'test_num', 'created_at'])

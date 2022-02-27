@@ -23,13 +23,13 @@ class InfoApi extends BaseApi
     public function index(): string|array
     {
         $model = ProjectModel::query()
-                ->with(['doc'=>function($query) {
-                    $query->select(['id', 'name', 'updated_at']);
-                }, 'updater'=>function($query) {
-                    $query->select(['id', 'name']);
-                }])
-                ->select(['id', 'sign', 'name', 'sname', 'ord', 'created_at'])
-                ->find($this->id);
+            ->with(['doc' => function ($query) {
+                $query->select(['id', 'title', 'updated_at']);
+            }, 'updater' => function ($query) {
+                $query->select(['id', 'name']);
+            }])
+            ->select(['id', 'sign', 'name', 'sname', 'ord', 'created_at'])
+            ->find($this->id);
         if (!$model) {
             return '无效的数据';
         }

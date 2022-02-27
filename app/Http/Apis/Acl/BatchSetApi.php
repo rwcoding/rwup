@@ -8,6 +8,7 @@ use App\Models\RoleModel;
 use App\Models\RolePermissionModel;
 use App\Services\AclService;
 use App\Services\ApiService;
+use App\Services\DateService;
 
 /**
  * @property int type 1 add  2 delete
@@ -30,6 +31,8 @@ class BatchSetApi extends BaseApi
             return "权限集合有误";
         }
 
+        $currentDate = DateService::now();
+
         foreach ($this->roles as $roleId) {
             if (!RoleModel::find($roleId)) {
                 continue;
@@ -42,7 +45,7 @@ class BatchSetApi extends BaseApi
                         if (in_array($item, $own)) {
                             continue;
                         }
-                        $data[] = ['role_id' => $roleId, 'permission' => $item];
+                        $data[] = ['role_id' => $roleId, 'permission' => $item, 'created_at' => $currentDate];
                     }
                     RolePermissionModel::insert($data);
                 }

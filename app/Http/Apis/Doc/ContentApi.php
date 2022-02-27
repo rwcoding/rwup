@@ -8,6 +8,7 @@ use App\Models\DocModel;
 use App\Models\UserModel;
 use App\Services\AclService;
 use App\Services\ApiService;
+use App\Services\DocService;
 
 /**
  * @property string content
@@ -43,12 +44,17 @@ class ContentApi extends BaseApi
             return "您没有权限编辑该文档";
         }
 
+        if ($model->content === $this->content) {
+            return '内容没有做任何修改';
+        }
+
         $model->content = $this->content;
         if (!$model->save()) {
             return '保存失败';
         }
 
-        //todo log
+        DocService::log($model, $user->id);
+
         return ApiService::success();
     }
 }

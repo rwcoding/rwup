@@ -10,14 +10,14 @@ use App\Models\DocModel;
  * @property int page_size
  * @property int project_id
  * @property int directory_id
- * @property string name
+ * @property string title
  */
 class ListApi extends BaseApi
 {
     public function rules(): array
     {
         return [
-            "page"      => "required|numeric|min:1",
+            "page" => "required|numeric|min:1",
             "page_size" => "required|numeric|min:5|max:20",
             "project_id" => "numeric|min:1",
             "directory_id" => "numeric|min:1",
@@ -33,23 +33,23 @@ class ListApi extends BaseApi
         if ($this->directory_id) {
             $query->where('directory_id', $this->directory_id);
         }
-        if ($this->name) {
-            $query->where('name', 'like', '%'.$this->name.'%');
+        if ($this->title) {
+            $query->where('title', 'like', '%' . $this->title . '%');
         }
         $count = (clone $query)->count();
         $data = $query
             ->with([
-                'user'=>function($query){
+                'user' => function ($query) {
                     $query->select(['id', 'name', 'username']);
                 },
-                'directory'=>function($query){
+                'directory' => function ($query) {
                     $query->select(['id', 'name']);
                 }
             ])
             ->select([
-                'id', 'name', 'sname', 'sign', 'user_id', 'directory_id',
+                'id', 'title', 'stitle', 'sign', 'user_id', 'directory_id',
                 'is_share', 'share_code',
-                'created_at', 'updated_at','ord',
+                'created_at', 'updated_at', 'ord',
                 'is_rw', 'is_rb', 'is_ww', 'is_wb'])
             ->offset(($this->page - 1) * $this->page_size)
             ->limit($this->page_size)

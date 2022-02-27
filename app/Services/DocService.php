@@ -12,8 +12,8 @@ class DocService
         $log = new DocLogModel();
         $log->doc_id = $doc->id;
         $log->user_id = $userId;
-        $log->name = $doc->name;
-        $log->sname = $doc->sname;
+        $log->title = $doc->title;
+        $log->stitle = $doc->stitle;
         $log->content = $doc->content;
         return $log->save();
     }

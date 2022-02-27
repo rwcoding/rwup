@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $name 名称
- * @property string $sname 短名称
+ * @property string $title 名称
+ * @property string $stitle 短名称
  * @property string $content 内容
  * @property int $doc_id 文档ID
  * @property int $user_id 创建人
