@@ -38,8 +38,7 @@ class ContentApi extends BaseApi
         if (!$project) {
             return '无效的工程';
         }
-
-        // todo 权限验证
+        
         if (!AclService::allowWriteDoc($model, $user)) {
             return "您没有权限编辑该文档";
         }

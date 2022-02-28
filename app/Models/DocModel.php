@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $title 名称
  * @property string $stitle 短名称
  * @property string $sign 标识
+ * @property string $file_sign 文件标识
  * @property string $content 内容
  * @property string $content_json DSL
  * @property int $directory_id 目录

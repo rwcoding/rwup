@@ -70,13 +70,13 @@ class AddApi extends BaseApi
         if ($this->isAdd && !AclService::allowWriteProject($project, $user)) {
             return "您没有权限编辑该项目";
         }
-        
+
         if (!$this->isAdd && !AclService::allowWriteDoc($model, $user)) {
             return "您没有权限编辑该文档";
         }
 
         $model->directory_id = $this->directory_id;
-        $model->sign = $this->sign;
+        // $model->sign = $this->sign;
         $model->title = $this->title;
         $model->stitle = $this->stitle ?: $this->title;
         $model->ord = $this->ord;

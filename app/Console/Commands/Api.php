@@ -34,19 +34,19 @@ class Api extends Command
         }
 
         $time = time();
-        $path     = "/api/".str_replace('.', '/', $this->argument('cmd'));
-        $token    = md5('1-token');
+        $path = "/api/" . str_replace('.', '/', $this->argument('cmd'));
+        $token = md5('1-token');
         $tokenKey = md5('1-token-key');
         $body = $params ? json_encode($params) : '';
-        $sign = md5($path.$time.$token.$body.$tokenKey);
+        $sign = md5($path . $time . $token . $body . $tokenKey);
 
         $http = Http::withHeaders([
-            'X-Time'  => $time,
+            'X-Time' => $time,
             'X-Token' => $token,
-            'X-Sign'  => $sign,
+            'X-Sign' => $sign,
         ]);
         $http->withBody($body, "application/json");
-        $response = $http->post(env('TEST_API_URL').$path);
+        $response = $http->post(env('TEST_API_URL') . $path);
 
         $body = $response->body();
 

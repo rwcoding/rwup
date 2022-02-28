@@ -5,9 +5,7 @@ namespace App\Http\Apis\Doc;
 use App\Http\Apis\BaseApi;
 use App\Models\DocModel;
 use App\Services\AclService;
-use App\Services\ApiService;
 use App\Services\ConfigService;
-use Illuminate\Support\Str;
 
 /**
  * @property string file
@@ -40,14 +38,13 @@ class UploadApi extends BaseApi
             return '无效的工程';
         }
 
-        // todo 权限验证
         if (!AclService::allowWriteDoc($model, $user)) {
             return "您没有权限编辑该文档";
         }
 
         $max = ConfigService::get('upload_max', 2 * 1024 * 1024);
         if ($this->size > $max) {
-            return '上传文件 '.$this->name.' 过大, 不能超过'.$max;
+            return '上传文件 ' . $this->name . ' 过大, 不能超过' . $max;
         }
 
         $info = pathinfo($this->name);
@@ -56,18 +53,18 @@ class UploadApi extends BaseApi
         }
 
         //$newName = $this->id.'-'.$user->id.'-'.time().'-'.rand(100,999).'.'.$info['extension'];
-        $newName = md5($this->file).'.'.$info['extension'];
-        if (in_array($info['extension'], ['jpg', 'jpeg','png', 'bmp', 'webp', 'gif', 'ico', ''])) {
-            $target = base_path('storage/app').'/public/images/'.$newName;
-            $url = '/images/'.$newName;
+        $newName = md5($this->file) . '.' . $info['extension'];
+        if (in_array($info['extension'], ['jpg', 'jpeg', 'png', 'bmp', 'webp', 'gif', 'ico', ''])) {
+            $target = base_path('storage/app') . '/public/images/' . $newName;
+            $url = '/images/' . $newName;
         } else {
-            $target = base_path('storage/app').'/public/files/'.$newName;
-            $url = '/files/'.$newName;
+            $target = base_path('storage/app') . '/public/files/' . $newName;
+            $url = '/files/' . $newName;
         }
 
         $pos = strpos($this->file, ',');
         if ($pos !== false) {
-            $this->file = substr($this->file, $pos+1);
+            $this->file = substr($this->file, $pos + 1);
         }
         $binary = base64_decode($this->file);
         file_put_contents($target, $binary);
@@ -75,6 +72,6 @@ class UploadApi extends BaseApi
         if (env('APP_ENV') == 'development') {
             $domain = 'http://localhost:8000';
         }
-        return ['url' => $domain.$url];
+        return ['url' => $domain . $url];
     }
 }

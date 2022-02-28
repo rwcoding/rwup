@@ -4,6 +4,8 @@ return [
     '/open/login' => '\App\Http\Apis\Open\LoginApi',
     '/open/logout' => '\App\Http\Apis\Open\LogoutApi',
     '/open/config' => '\App\Http\Apis\Open\ConfigApi',
+    '/open/sync/check' => '\App\Http\Apis\Open\SyncCheckApi',
+    '/open/sync' => '\App\Http\Apis\Open\SyncApi',
 
     '/home/dashboard' => '\App\Http\Apis\Home\DashboardApi',
 
