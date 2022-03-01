@@ -10,13 +10,13 @@ class Data
         if (!str_contains($root, ':') && str_starts_with($root, '/')) {
             $root = realpath(__DIR__ . '/' . $root);
             if ($root) {
-                throw new Error('root error');
+                throw new \Error('root error');
             }
         } else {
             $root = realpath($root);
         }
         if (!is_dir($root)) {
-            throw new Error('root error');
+            throw new \Error('root error');
         }
         return $root;
     }

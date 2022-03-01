@@ -7,7 +7,9 @@ use App\Models\DirectoryModel;
 use App\Models\DocModel;
 use App\Models\ProjectModel;
 use App\Services\AclService;
+use App\Services\DocService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property string $username
@@ -70,6 +72,7 @@ class SyncApi extends BaseApi
             $doc->file_sign = $item['file_sign'];
             $doc->ord = $item['ord'] ?? 10000;
             $doc->save();
+            DocService::log($doc, $user->id);
             $num++;
         }
         return ['num' => $num];
@@ -87,16 +90,10 @@ class SyncApi extends BaseApi
         $content .= "## 请求 \n";
         $table = $data['request'];
         if (!empty($table)) {
-            $content .= "|参数|类型|必须|最大长度|描述|示例|\n";
-            $content .= "|---|---|---|---|---|---|\n";
-            foreach ($table as $item) {
-                $length = $item['length'] ?? '-';
-                $required = $item['required'] ? '是' : '否';
-                $content .= "|{$item['name']}|{$item['type']}|{$required}|{$length}|{$item['desc']}|{$item['sample']}|\n";
-            }
+            $content .= $this->renderParamTable($table);
             $content .= "\n";
         } else {
-            $content .= "----\n";
+            $content .= "-- \n";
         }
 
         if (!empty($data['request_desc'])) {
@@ -106,22 +103,52 @@ class SyncApi extends BaseApi
         $content .= "## 响应 \n";
         $table = $data['response'];
         if (!empty($table)) {
-            $content .= "|参数|类型|必须|最大长度|描述|示例|\n";
-            $content .= "|---|---|---|---|---|---|\n";
-            foreach ($table as $item) {
-                $length = $item['length'] ?? '-';
-                $required = $item['required'] ? '是' : '否';
-                $content .= "|{$item['name']}|{$item['type']}|{$required}|{$length}|{$item['desc']}|{$item['sample']}|\n";
-            }
+            $content .= $this->renderParamTable($table);
             $content .= "\n";
         } else {
-            $content .= "----\n";
+            $content .= "-- \n";
         }
 
         if (!empty($data['response_desc'])) {
             $content .= $data['response_desc'] . "\n";
         }
 
+        $content .= "\n";
+
+        return $content;
+    }
+
+    private function renderParamTable(array $table, int $level = 0, string $from = ''): string
+    {
+        $content = "";
+        if ($level == 0) {
+            $content = "|参数|类型|必须|最大长度|描述|示例|\n";
+            $content .= "|---|---|---|---|---|---|\n";
+        }
+        foreach ($table as $item) {
+            $name = $item['name'];
+            $type = $item['type'];
+            $length = !empty($item['length']) ? $item['length'] : '-';
+            $required = !empty($item['required']) ? '是' : '否';
+            $desc = !empty($item['desc']) ? $item['desc'] : '-';
+            $sample = !empty($item['sample']) ? $item['sample'] : '-';
+            if ($level > 0) {
+                $class = 'ml-' . ($level * 20) . ' ' . ($from == 'object' ? 'c-danger' : 'c-primary');
+                // $flag = $from == 'object' ? '◆' : '◇';
+                $flag = '◆';
+                $name = ' <em class="' . $class . '">' . $flag . '</em> ' . $name;
+            }
+            if ($item['type'] == 'object') {
+                $type = '<em class="c-danger">' . $type . '</em>';
+            } else if (str_starts_with($item['type'], 'array')) {
+                $type = '<em class="c-primary">' . $type . '</em>';
+            }
+
+            $content .= "|{$name}|{$type}|{$required}|{$length}|{$desc}|{$sample}|\n";
+            if (!empty($item['tree'])) {
+                $content .= $this->renderParamTable($item['tree'], $level + 1, $item['type']);
+            }
+        }
         return $content;
     }
 }

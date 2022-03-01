@@ -38,7 +38,7 @@ class Api
         ]);
         $result = curl_exec($ch);
         if (!$result) {
-            throw new Error(curl_error($ch));
+            throw new \Error(curl_error($ch));
         }
         curl_close($ch);
         return json_decode($result, true);

@@ -20,8 +20,8 @@ class InfoApi extends BaseApi
     public function index(): string|array
     {
         $model = DirectoryModel::query()
-                ->select(['id', 'name', 'pid', 'ord'])
-                ->find($this->id);
+            ->select(['id', 'name', 'sign', 'pid', 'ord'])
+            ->find($this->id);
         if (!$model) {
             return '无效的数据';
         }

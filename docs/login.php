@@ -1,18 +1,8 @@
 <?php
 
-$desc = <<<'EOT'
-> Hello World
-> Hello World
-> Hello World
-> Hello World  
-EOT;
-
-
 return [
     'title' => '用户登录',
     'route' => '/api/open/login',
-
-    'doc_desc' => $desc,
 
     'request' => new class {
         #[Att(desc: '账号', length: 30)]
@@ -26,7 +16,10 @@ return [
     },
 
     'response' => new class {
-        #[Att(desc: 'KEY', length: 69)]
+        #[Att(desc: '用户Token', length: 64)]
         public string $token;
+
+        #[Att(desc: '签名Key', length: 64)]
+        public string $key;
     }
 ];

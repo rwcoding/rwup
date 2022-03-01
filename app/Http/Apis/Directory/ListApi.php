@@ -27,7 +27,7 @@ class ListApi extends BaseApi
         }
         $count = (clone $query)->count();
         $data = $query
-            ->select(['id', 'name', 'pid', 'ord', 'created_at'])
+            ->select(['id', 'name', 'sign', 'pid', 'ord', 'created_at'])
             ->orderByDesc("ord")
             ->get();
 

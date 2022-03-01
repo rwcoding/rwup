@@ -8,15 +8,16 @@ class Sync
     public static function run(): void
     {
         $root = Data::root();
-        if (file_exists($root . DIRECTORY_SEPARATOR . '_dirs.php')) {
-            $dirs = require $root . DIRECTORY_SEPARATOR . '_dirs.php';
+        $file = $root . DIRECTORY_SEPARATOR . '_dirs.php';
+        if (file_exists($file)) {
+            $dirs = require $file;
         } else {
             $dirs = self::dirs($root);
         }
         $files = self::files($root);
         $result = Api::check($dirs, $files);
         if ($result['code'] !== 10000) {
-            throw new Error($result['msg'] ?: '接口异常');
+            throw new \Error($result['msg'] ?: '接口异常');
         }
         $needUpload = $result['data']['files'];
         $docs = [];

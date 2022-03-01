@@ -1,0 +1,385 @@
+#!/usr/bin/env php
+<?php 
+namespace DocGenerate148828 { 
+class Api
+{
+    public static function check(array $dirs, array $files): array
+    {
+        return self::request('open.sync.check', ['dirs' => $dirs, 'files' => $files]);
+    }
+
+    public static function sync(array $docs): array
+    {
+        return self::request('open.sync', ['docs' => $docs]);
+    }
+
+    public static function request(string $cmd, array $params): array
+    {
+        $config = Data::$config;
+        $params['username'] = $config['username'];
+        $params['password'] = $config['password'];
+        $params['project'] = $config['project'];
+
+        $time = time();
+        $path = "/api/" . str_replace('.', '/', $cmd);
+        $token = "-";
+        $tokenKey = "-";
+        $body = $params ? json_encode($params, JSON_UNESCAPED_UNICODE) : '';
+        $sign = md5($path . $time . $token . $body . $tokenKey);
+        $ch = curl_init($config['url'] . $path);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'X-Time: ' . $time,
+            'X-Token: ' . $token,
+            'X-Sign: ' . $sign,
+        ]);
+        $result = curl_exec($ch);
+        if (!$result) {
+            throw new \Error(curl_error($ch));
+        }
+        curl_close($ch);
+        return json_decode($result, true);
+    }
+}
+class Console
+{
+    private string $script = "";
+    private array $flags = [];
+    private array $commands = [];
+
+    public function __construct()
+    {
+        list($this->script, $this->flags, $this->commands) = $this->parse($_SERVER['argv']);
+    }
+
+    public function parse(array $argv): array
+    {
+        $script = "";
+        $flags = [];
+        $commands = [];
+        $length = count($argv);
+        for ($i = 0; $i < $length; $i++) {
+            if ($i == 0) {
+                $script = $argv[$i];
+                continue;
+            }
+            if (strpos($argv[$i], "=")) {
+                $arr = explode("=", $argv[$i]);
+                if (strncmp($arr[0], "--", 2) == 0) {
+                    $flags[substr($arr[0], 2)] = $arr[1];
+                } else if (strncmp($arr[0], "-", 1) == 0) {
+                    $flags[substr($arr[0], 1)] = $arr[1];
+                } else {
+                    $flags[$arr[0]] = $arr[1];
+                }
+                continue;
+            }
+
+            if (strncmp($argv[$i], "--", 2) == 0) {
+                $flags[substr($argv[$i], 2)] = true;
+            } else if (strncmp($argv[$i], "-", 1) == 0) {
+                $flags[substr($argv[$i], 1)] = true;
+            } else {
+                $commands[$argv[$i]] = true;
+            }
+        }
+        return [$script, $flags, $commands];
+    }
+
+    public function getScript(): string
+    {
+        return $this->script;
+    }
+
+    public function hasFlag(string $name): bool
+    {
+        return isset($this->flags[$name]);
+    }
+
+    public function getString(string $name): string
+    {
+        return $this->flags[$name] ?? "";
+    }
+
+    public function getFlag(string $name): ?string
+    {
+        return $this->flags[$name] ?? null;
+    }
+
+    public function hasCommand(string $name): bool
+    {
+        return isset($this->commands[$name]);
+    }
+
+    public function getFlags(): array
+    {
+        return $this->flags;
+    }
+
+    public function getCommands(): array
+    {
+        return $this->commands;
+    }
+}
+class Data
+{
+    public static array $config = [];
+
+    public static function root(): string
+    {
+        $root = self::$config['root'];
+        if (!str_contains($root, ':') && str_starts_with($root, '/')) {
+            $root = realpath(__DIR__ . '/' . $root);
+            if ($root) {
+                throw new \Error('root error');
+            }
+        } else {
+            $root = realpath($root);
+        }
+        if (!is_dir($root)) {
+            throw new \Error('root error');
+        }
+        return $root;
+    }
+}
+class Helper
+{
+    public function api(): void
+    {
+
+    }
+}
+class Parser
+{
+    public static function parse(string $file): array
+    {
+        $root = Data::root();
+        $files = [];
+        $f = $root . DIRECTORY_SEPARATOR . '_files.php';
+        if (file_exists($f)) {
+            $files = require $f;
+        }
+        $sign = str_replace($root, '', $file);
+        $sign = str_replace('\\', '/', $sign);
+        $info = pathinfo($file);
+
+        if (str_ends_with($file, '.md')) {
+            return [
+                'title' => $files[$sign] ?? $info['filename'],
+                'sign' => $sign,
+                'file_sign' => md5_file($file),
+                'content' => file_get_contents($file),
+            ];
+        } else {
+            $arr = require $file;
+            $struct = self::parsePHP($arr);
+            return [
+                'title' => $arr['title'] ?? $info['filename'],
+                'sign' => $sign,
+                'file_sign' => md5_file($file),
+                'content' => '',
+                'struct' => $struct,
+            ];
+        }
+    }
+
+    public static function parsePHP($arr): array
+    {
+        $request = !empty($arr['request']) ? self::parseObject($arr['request']) : [];
+        $response = !empty($arr['response']) ? self::parseObject($arr['response']) : [];
+        return [
+            'doc_desc' => $arr['doc_desc'] ?? '',
+            'request_desc' => $arr['request_desc'] ?? '',
+            'response_desc' => $arr['response_desc'] ?? '',
+            'route' => $arr['route'] ?? '',
+            'request' => $request,
+            'response' => $response,
+        ];
+    }
+
+    public static function parseObject(object|string $obj): array
+    {
+        $ref = new ReflectionClass($obj);
+        $result = [];
+        $order = 100;
+        foreach ($ref->getProperties() as $prop) {
+            $tmp = ['tree' => []];
+            $tmp['name'] = $prop->getName();
+
+            if (method_exists($obj, 'need') && !$obj->need($tmp['name'])) {
+                continue;
+            }
+
+            $type = $prop->getType();
+            if ($type instanceof ReflectionUnionType) {
+                foreach ($type->getTypes() as $t) {
+                    $name = $t->getName();
+                    if ($name != 'array') {
+                        if (!in_array($name, [
+                            'int', 'float', 'string', 'double', 'bool'
+                        ])) {
+                            $tmp['type'] = 'array[object]';
+                            $tmp['tree'] = self::parseObject($name);
+                        } else {
+                            $tmp['type'] = 'array[' . $name . ']';
+                        }
+                    }
+                }
+            } else {
+                $name = $type->getName();
+                if (!in_array($name, [
+                    'int', 'float', 'string', 'double', 'bool', 'array'
+                ])) {
+                    $tmp['type'] = 'object';
+                    $tmp['tree'] = self::parseObject($name);
+                } else {
+                    $tmp['type'] = $name;
+                }
+            }
+            $ext = [];
+            foreach ($prop->getAttributes() as $attr) {
+                $args = $attr->getArguments();
+                if (isset($args[0])) {
+                    $an = new ($attr->getName())(...$args);
+                } else {
+                    $an = new ($attr->getName());
+                    foreach ($args as $key => $value) {
+                        $an->$key = $value;
+                    }
+                }
+                if (method_exists($an, 'parse')) {
+                    $ext = array_merge($ext, $an->parse());
+                }
+            }
+            $ext['desc'] = $ext['desc'] ?? '';
+            $ext['required'] = $ext['required'] ?? true;
+            $ext['length'] = $ext['length'] ?? 0;
+            $ext['sample'] = $ext['sample'] ?? '';
+            $ext['order'] = $ext['order'] ?? ++$order;
+
+            $tmp = array_merge($tmp, $ext);
+            $result[] = $tmp;
+        }
+
+        if (method_exists($obj, 'extend')) {
+            $result = array_merge($result, $obj->extend());
+        }
+
+        $ords = array_column($result, 'order');
+        array_multisort($ords, SORT_ASC, $result);
+
+        return $result;
+    }
+}
+class Runner
+{
+    public static function run(): void
+    {
+        try {
+            $console = new Console();
+            $conf = $console->getFlag('conf');
+            if (!$conf) {
+                $conf = getcwd() . DIRECTORY_SEPARATOR . '.docg';
+            }
+            if (!file_exists($conf)) {
+                throw new \Error("$conf not found");
+            }
+            Data::$config = parse_ini_file($conf, true);
+
+            $file = Data::root() . DIRECTORY_SEPARATOR . '_init.php';
+            if (file_exists($file)) {
+                require $file;
+            }
+
+            Sync::run();
+
+        } catch (\Throwable $e) {
+            // print_r($e);
+            echo $e->getMessage() . "\n";
+        }
+    }
+}
+class Sync
+{
+    private static array $dirs = [];
+    private static array $files = [];
+
+    public static function run(): void
+    {
+        $root = Data::root();
+        $file = $root . DIRECTORY_SEPARATOR . '_dirs.php';
+        if (file_exists($file)) {
+            $dirs = require $file;
+        } else {
+            $dirs = self::dirs($root);
+        }
+        $files = self::files($root);
+        $result = Api::check($dirs, $files);
+        if ($result['code'] !== 10000) {
+            throw new \Error($result['msg'] ?: '接口异常');
+        }
+        $needUpload = $result['data']['files'];
+        $docs = [];
+        $num = 0;
+        foreach ($needUpload as $item) {
+            $docs[] = Parser::parse($root . $item);
+            echo " -- sync $item ...... \n";
+            if (count($docs) >= 5 || count($docs) >= count($needUpload)) {
+                $result = Api::sync($docs);
+                if ($result['code'] !== 10000) {
+                    echo $result['msg'] ?? '接口异常';
+                    echo PHP_EOL;
+                } else {
+                    $num += $result['data']['num'];
+                }
+                $docs = [];
+            }
+        }
+        echo "[over] sync document $num. \n";
+    }
+
+    public static function dirs(string $root): array
+    {
+        foreach (scandir($root) as $item) {
+            if (str_starts_with($item, '.') ||
+                str_starts_with($item, '_')) {
+                continue;
+            }
+            $path = $root . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path)) {
+                $key = str_replace(Data::root(), '', $path);
+                $key = str_replace('\\', '/', $key);
+                $name = substr($path, strrpos($path, DIRECTORY_SEPARATOR) + 1);
+                self::$dirs[$key] = $name;
+                self::dirs($path);
+            }
+        }
+        return self::$dirs;
+    }
+
+    public static function files(string $root): array
+    {
+        foreach (scandir($root) as $item) {
+            if (str_starts_with($item, '.') ||
+                str_starts_with($item, '_')) {
+                continue;
+            }
+            $path = $root . DIRECTORY_SEPARATOR . $item;
+            if (is_file($path)) {
+                $key = str_replace(Data::root(), '', $path);
+                $key = str_replace('\\', '/', $key);
+                // $key = substr($key, 0, strrpos($key, '.'));
+                self::$files[$key] = md5_file($path);
+            } else {
+                self::files($path);
+            }
+        }
+        return self::$files;
+    }
+}
+\DocGenerate148828\Runner::run(); 
+}
