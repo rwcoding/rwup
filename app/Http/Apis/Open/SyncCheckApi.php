@@ -59,7 +59,7 @@ class SyncCheckApi extends BaseApi
                 $item->ord != $ord) {
                 $update[$item->id] = [
                     'name' => $this->dirs[$item->sign],
-                    'ord' => $ord
+                    'ord' => $item->ord >= 200 ? $item->ord : $ord
                 ];
             }
         }
