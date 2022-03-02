@@ -2,9 +2,13 @@
 
 class Api
 {
-    public static function check(array $dirs, array $files): array
+    public static function check(array $dirs, array $files, array $titles): array
     {
-        return self::request('open.sync.check', ['dirs' => $dirs, 'files' => $files]);
+        return self::request('open.sync.check', [
+            'dirs' => $dirs,
+            'files' => $files,
+            'titles' => $titles
+        ]);
     }
 
     public static function sync(array $docs): array

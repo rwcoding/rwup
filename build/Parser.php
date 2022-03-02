@@ -4,30 +4,30 @@ class Parser
 {
     public static function parse(string $file): array
     {
-        $root = Data::root();
-        $files = [];
-        $f = $root . DIRECTORY_SEPARATOR . '_files.php';
-        if (file_exists($f)) {
-            $files = require $f;
-        }
-        $sign = str_replace($root, '', $file);
-        $sign = str_replace('\\', '/', $sign);
-        $info = pathinfo($file);
+        $file = realpath($file);
+
+        $title = Files::getFileTitleByFs($file);
+        $sign = Files::getFileSignByFs($file);
+        $dirSign = Files::getDirSignByFile($file);
+        $fileSign = md5_file($file);
 
         if (str_ends_with($file, '.md')) {
             return [
-                'title' => $files[$sign] ?? $info['filename'],
+                'title' => $title,
                 'sign' => $sign,
-                'file_sign' => md5_file($file),
+                'dir_sign' => $dirSign,
+                'file_sign' => $fileSign,
                 'content' => file_get_contents($file),
+                'struct' => [],
             ];
         } else {
-            $arr = require $file;
+            $arr = Data::php($file);
             $struct = self::parsePHP($arr);
             return [
-                'title' => $arr['title'] ?? $info['filename'],
+                'title' => $title,
                 'sign' => $sign,
-                'file_sign' => md5_file($file),
+                'dir_sign' => $dirSign,
+                'file_sign' => $fileSign,
                 'content' => '',
                 'struct' => $struct,
             ];

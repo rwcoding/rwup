@@ -51,7 +51,7 @@ class SyncApi extends BaseApi
                 ->where('sign', $item['sign'])
                 ->first();
             if (!$doc) {
-                $dirSign = substr($item['sign'], 0, strrpos($item['sign'], '/'));
+                $dirSign = $item['dir_sign'];
                 $dir = DirectoryModel::whereProjectId($project->id)
                     ->whereSign($dirSign)->first();
                 $dirId = $dir ? $dir->id : 0;
@@ -70,7 +70,7 @@ class SyncApi extends BaseApi
                 $doc->content = $item['content'];
             }
             $doc->file_sign = $item['file_sign'];
-            $doc->ord = $item['ord'] ?? 10000;
+            $doc->ord = $item['order'] ?? 10000;
             $doc->save();
             DocService::log($doc, $user->id);
             $num++;
@@ -85,7 +85,7 @@ class SyncApi extends BaseApi
             $content .= $data['doc_desc'] . "\n";
         }
 
-        $content .= "## 指令 \n ```" . ($data['route'] ?? '') . "``` \n";
+        $content .= "## 指令 \n `" . ($data['route'] ?? ' ') . "` \n";
 
         $content .= "## 请求 \n";
         $table = $data['request'];

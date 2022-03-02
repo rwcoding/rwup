@@ -13,8 +13,8 @@ use App\Services\UserService;
  * @property string $username
  * @property string $password
  * @property string $project
- * @property array<string> $dirs
- * @property array<string> $files
+ * @property array<array> $dirs
+ * @property array<array> $files
  */
 class SyncCheckApi extends BaseApi
 {
@@ -45,7 +45,7 @@ class SyncCheckApi extends BaseApi
         }
 
         $dms = DirectoryModel::where('project_id', $project->id)
-            ->where('sign', 'like', '/%')
+            ->where('sign', 'like', '$%')
             ->get();
         $delete = [];
         $update = [];
@@ -73,6 +73,9 @@ class SyncCheckApi extends BaseApi
         }
         $ord = 10000;
         foreach ($this->dirs as $sign => $name) {
+            if (str_starts_with($sign, '$')) {
+                $sign = substr($sign, 1);
+            }
             if (!str_starts_with($sign, '/')) {
                 $sign = '/' . $sign;
             }
@@ -83,10 +86,10 @@ class SyncCheckApi extends BaseApi
             if (empty($arr[1])) {
                 continue;
             }
-            if (!$dms->where('sign', '/' . $arr[1])->first()) {
+            if (!$dms->where('sign', '$/' . $arr[1])->first()) {
                 $model = new DirectoryModel();
-                $model->name = $this->dirs['/' . $arr[1]] ?? $arr[1];
-                $model->sign = '/' . $arr[1];
+                $model->name = $this->dirs['$/' . $arr[1]] ?? $arr[1];
+                $model->sign = '$/' . $arr[1];
                 $model->ord = ++$ord;
                 $model->pid = 0;
                 $model->project_id = $project->id;
@@ -95,10 +98,10 @@ class SyncCheckApi extends BaseApi
             }
 
             if (isset($arr[2])) {
-                if ($p = $dms->where('sign', $sign)->first()) {
+                if ($p = $dms->where('sign', '$' . $sign)->first()) {
                     $model = new DirectoryModel();
                     $model->name = $name;
-                    $model->sign = $sign;
+                    $model->sign = '$' . $sign;
                     $model->ord = ++$ord;
                     $model->pid = $p->id;
                     $model->project_id = $project->id;
@@ -109,20 +112,28 @@ class SyncCheckApi extends BaseApi
 
         // 检测文件
         $dms = DocModel::where('project_id', $project->id)
-            ->where('sign', 'like', '/%')
+            ->where('sign', 'like', '$%')
             ->get();
+
         $delete = [];
         $insert = [];
+        $has = [];
         foreach ($dms as $item) {
+            $has[] = $item->sign;
             if (!isset($this->files[$item->sign])) {
                 $delete[] = $item->id;
-            } else if ($this->files[$item->sign] != $item->file_sign) {
-                $insert[] = $item->sign;
+            } else if ($this->files[$item->sign]['md5'] != $item->file_sign) {
+                $insert[] = $this->files[$item->sign]['file'];
+            } else if ($this->files[$item->sign]['title'] != $item->title) {
+                DocModel::whereId($item->id)->update([
+                    'title' => $this->files[$item->sign]['title'],
+                    'stitle' => $this->files[$item->sign]['title']
+                ]);
             }
         }
-        foreach ($this->files as $sign => $fileSign) {
-            if (!$dms->where('sign', $sign)->first()) {
-                $insert[] = $sign;
+        foreach ($this->files as $sign => $item) {
+            if (!in_array($sign, $has)) {
+                $insert[] = $item['file'];
             }
         }
         if ($delete) {

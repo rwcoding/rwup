@@ -36,10 +36,13 @@ password = admin
 project = pms
 
 # 根目录
-root = docs 
+root = docs
 
 # 文档系统接口地址
 url = http://localhost:80
+
+# 允许解析文件
+parse = md,php
 ```
 
 ## 使用同步生成工具

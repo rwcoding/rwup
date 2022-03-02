@@ -3,6 +3,7 @@
 class Data
 {
     public static array $config = [];
+    private static array $cache = [];
 
     public static function root(): string
     {
@@ -19,5 +20,13 @@ class Data
             throw new \Error('root error');
         }
         return $root;
+    }
+
+    public static function php(string $file): array
+    {
+        if (!isset(self::$cache[$file])) {
+            self::$cache[$file] = require $file;
+        }
+        return self::$cache[$file];
     }
 }

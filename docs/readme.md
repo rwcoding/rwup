@@ -47,8 +47,8 @@
 ## 示例
 
 ```javascript
-const token = '4e66ccf7c8c8dd1491fffcdaca1cf88f' // 登录后获取，登录前为空字符串
-const key = '47a004d84228e9fa599cd945b4ace0b4' // 登录后获取，登录前为空字符串
+const token = '4e66ccf7c8c8dd1491fffcdaca1cf88f' // 登录后获取，登录前为随机32字符串
+const key = '47a004d84228e9fa599cd945b4ace0b4' // 登录后获取，登录前为随机32字符串
 
 const route = '/api/open/login'
 const time = Math.round(new Date().getTime() / 1000)

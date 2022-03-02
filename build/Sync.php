@@ -8,14 +8,10 @@ class Sync
     public static function run(): void
     {
         $root = Data::root();
-        $file = $root . DIRECTORY_SEPARATOR . '_dirs.php';
-        if (file_exists($file)) {
-            $dirs = require $file;
-        } else {
-            $dirs = self::dirs($root);
-        }
-        $files = self::files($root);
-        $result = Api::check($dirs, $files);
+        $dirs = Dirs::mapSignName();
+        $files = Files::mapSignMd5($root);
+
+        $result = Api::check($dirs, $files, Titles::configTitles());
         if ($result['code'] !== 10000) {
             throw new \Error($result['msg'] ?: '接口异常');
         }
@@ -25,56 +21,28 @@ class Sync
         foreach ($needUpload as $item) {
             $docs[] = Parser::parse($root . $item);
             echo " -- sync $item ...... \n";
-            if (count($docs) >= 5 || count($docs) >= count($needUpload)) {
-                $result = Api::sync($docs);
-                if ($result['code'] !== 10000) {
-                    echo $result['msg'] ?? '接口异常';
-                    echo PHP_EOL;
-                } else {
-                    $num += $result['data']['num'];
-                }
+            if (count($docs) >= 5) {
+                $num += self::syncDoc($docs);
                 $docs = [];
             }
+        }
+        if (!empty($docs)) {
+            $num += self::syncDoc($docs);
         }
         echo "[over] sync document $num. \n";
     }
 
-    public static function dirs(string $root): array
+    public static function syncDoc(array $docs): int
     {
-        foreach (scandir($root) as $item) {
-            if (str_starts_with($item, '.') ||
-                str_starts_with($item, '_')) {
-                continue;
-            }
-            $path = $root . DIRECTORY_SEPARATOR . $item;
-            if (is_dir($path)) {
-                $key = str_replace(Data::root(), '', $path);
-                $key = str_replace('\\', '/', $key);
-                $name = substr($path, strrpos($path, DIRECTORY_SEPARATOR) + 1);
-                self::$dirs[$key] = $name;
-                self::dirs($path);
-            }
+        $result = Api::sync($docs);
+        if ($result['code'] !== 10000) {
+            echo $result['msg'] ?? '接口异常';
+            echo PHP_EOL;
+            return 0;
+        } else {
+            return $result['data']['num'];
         }
-        return self::$dirs;
     }
 
-    public static function files(string $root): array
-    {
-        foreach (scandir($root) as $item) {
-            if (str_starts_with($item, '.') ||
-                str_starts_with($item, '_')) {
-                continue;
-            }
-            $path = $root . DIRECTORY_SEPARATOR . $item;
-            if (is_file($path)) {
-                $key = str_replace(Data::root(), '', $path);
-                $key = str_replace('\\', '/', $key);
-                // $key = substr($key, 0, strrpos($key, '.'));
-                self::$files[$key] = md5_file($path);
-            } else {
-                self::files($path);
-            }
-        }
-        return self::$files;
-    }
+
 }

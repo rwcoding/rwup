@@ -6,6 +6,7 @@ return [
     '/open/config' => '\App\Http\Apis\Open\ConfigApi',
     '/open/sync/check' => '\App\Http\Apis\Open\SyncCheckApi',
     '/open/sync' => '\App\Http\Apis\Open\SyncApi',
+    '/open/share' => '\App\Http\Apis\Open\ShareApi',
 
     '/home/dashboard' => '\App\Http\Apis\Home\DashboardApi',
 

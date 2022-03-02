@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Http\Context;
 use App\Services\AclService;
 use App\Services\ApiService;
+use App\Services\EnvService;
 use App\Services\TokenService;
 use App\Services\UserService;
 use Closure;
@@ -32,6 +33,10 @@ class Auth
         }
 
         $body = $request->getContent();
+
+        if (EnvService::isDebug()) {
+            Log::info($body);
+        }
 
         // 允许所有未登陆api
         if (!str_starts_with($api, "/api/open")) {

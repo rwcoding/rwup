@@ -23,7 +23,7 @@ class Runner
             Sync::run();
 
         } catch (\Throwable $e) {
-            // print_r($e);
+            print_r($e);
             echo $e->getMessage() . "\n";
         }
     }
